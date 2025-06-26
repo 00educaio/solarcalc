@@ -4,6 +4,9 @@ import { TextInput, Button, Text } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import { Link } from 'expo-router';
+import { auth } from '../../firebase.config'; 
+import { signInWithEmailAndPassword } from "firebase/auth";
+
 
 const screenWidth = Dimensions.get('window').width;
 const aspectRatio = 500 / 250;
@@ -12,6 +15,23 @@ const imageHeight = screenWidth / aspectRatio;
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const handleLogin = (auth: any, email: string, senha: string) => {
+    console.log("Logando", email, senha);
+    
+      signInWithEmailAndPassword(auth, email, senha)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          console.log("Logado", user);
+          
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log("Erro ao logar", errorCode, errorMessage);
+          
+        });
+  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -62,10 +82,10 @@ export default function LoginScreen() {
             </Link>
           </View>
 
-          <Button mode="contained" style={styles.button}>
+          <Button mode="contained" style={styles.button} onPress={ () => handleLogin(auth, email, password)}>
             Entrar
           </Button>
-
+{/* 
           <View>
             <Text style={{ fontSize: 20, color: "#08364E", marginTop: 10, marginBottom: 10 }}>
               ou
@@ -79,7 +99,7 @@ export default function LoginScreen() {
             labelStyle={{ color: '#08364E', fontWeight: 'bold' }}
           >
             Entrar com Google
-          </Button>
+          </Button> */}
 
           <View style={{ marginTop: 20 }}>
             <Link href={"/register"} asChild>
@@ -143,8 +163,8 @@ const styles = StyleSheet.create({
   },
   recuperar: {
     alignSelf: "flex-end",
-    marginTop: 5,
-    marginBottom: 10,
+    marginTop: 8,
+    marginBottom: 15,
   },
   imageContainer: {
     width: screenWidth,

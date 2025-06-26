@@ -3,7 +3,9 @@ import { View, StyleSheet, Image, Dimensions, Pressable } from 'react-native';
 import { TextInput, Button, Text } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
-import { Link } from 'expo-router'
+import { Link } from 'expo-router';
+import { auth } from '../../firebase.config';
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 const screenWidth = Dimensions.get('window').width;
 const aspectRatio = 500 / 250;
@@ -14,6 +16,26 @@ export default function RegisterScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  const handleRegister = (auth: any, email: string, senha: string, confirmaSenha: string) => {
+    console.log("Registrando", email, senha);
+    if (senha !== confirmaSenha) {
+      console.log("As senhas não coincidem");
+      return;
+    }
+      createUserWithEmailAndPassword(auth, email, senha)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          console.log("Registrado", user);
+          
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log("Erro ao registrar", errorCode, errorMessage);
+          
+        });
+  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -73,10 +95,10 @@ export default function RegisterScreen() {
             style={styles.input}
           />
 
-          <Button mode="contained" style={styles.button}>
+          <Button mode="contained" style={styles.button} onPress={() => handleRegister(auth, email, password, confirmPassword)}>
             Cadastrar
           </Button>
-
+{/* 
           <View>
             <Text style={{ fontSize: 20, color: "#08364E", marginTop: 10, marginBottom: 10 }}>
               ou
@@ -90,7 +112,7 @@ export default function RegisterScreen() {
             labelStyle={{ color: '#08364E', fontWeight: 'bold' }}
           >
             Cadastrar com Google
-          </Button>
+          </Button> */}
 
           <View style={{ marginTop: 20 }}>
             <Link href={"/"} asChild>
