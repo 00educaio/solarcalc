@@ -4,6 +4,8 @@ import { TextInput, Button, Text } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import { Link } from 'expo-router';
+import { auth } from '../../../firebase.config';
+import handleForgotPassword from '../../services/handleForgotPassword';
 
 const screenWidth = Dimensions.get('window').width;
 const aspectRatio = 500 / 250;
@@ -19,7 +21,7 @@ export default function ForgotPasswordScreen() {
       <View style={styles.container}>
         <View style={styles.imageContainer}>
           <Image
-            source={require('../assets/final.png')}
+            source={require('../../assets/final.png')}
             style={styles.image}
             resizeMode="cover"
           />
@@ -47,12 +49,12 @@ export default function ForgotPasswordScreen() {
             style={styles.input}
           />
 
-          <Button mode="contained" style={styles.button}>
+          <Button mode="contained" style={styles.button} onPress={() => handleForgotPassword(auth, email)}>
             Enviar Link
           </Button>
 
           <View style={{ marginTop: 20 }}>
-            <Link href={"/"} asChild>
+            <Link href={"/auth/login" as any} asChild>
                 <Pressable>
                     <Text style={{ fontSize: 16, color: "#08364E" }}>
                         Retornar para o Login.

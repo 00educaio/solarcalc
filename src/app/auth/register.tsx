@@ -4,8 +4,8 @@ import { TextInput, Button, Text } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import { Link } from 'expo-router';
-import { auth } from '../../firebase.config';
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from '../../../firebase.config';
+import handleRegister from '../../services/handleRegister';
 
 const screenWidth = Dimensions.get('window').width;
 const aspectRatio = 500 / 250;
@@ -17,26 +17,6 @@ export default function RegisterScreen() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleRegister = (auth: any, email: string, senha: string, confirmaSenha: string) => {
-    console.log("Registrando", email, senha);
-    if (senha !== confirmaSenha) {
-      console.log("As senhas não coincidem");
-      return;
-    }
-      createUserWithEmailAndPassword(auth, email, senha)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          console.log("Registrado", user);
-          
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.log("Erro ao registrar", errorCode, errorMessage);
-          
-        });
-  }
-
   return (
     <View style={{ flex: 1 }}>
       <StatusBar style="light" />
@@ -44,7 +24,7 @@ export default function RegisterScreen() {
       <View style={styles.container}>
         <View style={styles.imageContainer}>
           <Image
-            source={require('../assets/final.png')}
+            source={require('../../assets/final.png')}
             style={styles.image}
             resizeMode="cover"
           />
@@ -95,27 +75,12 @@ export default function RegisterScreen() {
             style={styles.input}
           />
 
-          <Button mode="contained" style={styles.button} onPress={() => handleRegister(auth, email, password, confirmPassword)}>
+          <Button mode="contained" style={styles.button} onPress={() => handleRegister(auth, email, password, confirmPassword, name)}>
             Cadastrar
           </Button>
-{/* 
-          <View>
-            <Text style={{ fontSize: 20, color: "#08364E", marginTop: 10, marginBottom: 10 }}>
-              ou
-            </Text>
-          </View>
-
-          <Button
-            mode="contained"
-            icon="google"
-            style={styles.buttonGoogle}
-            labelStyle={{ color: '#08364E', fontWeight: 'bold' }}
-          >
-            Cadastrar com Google
-          </Button> */}
 
           <View style={{ marginTop: 20 }}>
-            <Link href={"/"} asChild>
+            <Link href={"/auth/login" as any} asChild>
                 <Pressable>
                     <Text style={{ fontSize: 16, color: "#08364E" }}>
                     Já possui uma conta? Entrar
