@@ -3,12 +3,9 @@ import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { useRouter } from 'expo-router';
 
 const db = getFirestore();
-const handleRegister = (auth: Auth, email: string, senha: string, confirmaSenha: string, name: string) : void => {
+const handleRegister = (auth: Auth, name: string, email: string, senha: string, phone: string, estado: string) : void => {
     console.log("Registrando", email, senha);
-    if (senha !== confirmaSenha) {
-      console.log("As senhas não coincidem");
-      return;
-    }
+
       createUserWithEmailAndPassword(auth, email, senha)
         .then( async (userCredential) => {
           const user = userCredential.user;
@@ -26,7 +23,7 @@ const handleRegister = (auth: Auth, email: string, senha: string, confirmaSenha:
           console.log("Registrado", user);
 
           const router = useRouter();
-          router.replace('/home');
+          router.replace('/home' as any);
           
         })
         .catch((error) => {

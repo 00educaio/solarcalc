@@ -10,7 +10,7 @@ const handleLogin = (auth: Auth, email: string, senha: string) : void => {
           console.log("Logado", user);
 
           const router = useRouter();
-          router.replace('/home');
+          router.replace('/home' as any);
           
         })
         .catch((error) => {
