@@ -1,13 +1,8 @@
 import React, { useState } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { TextInput, Button, Text, RadioButton, Divider, Menu, Provider } from 'react-native-paper';
+import { Equipamento, simulation } from '../../services/home/handleSimulation';
 
-type Equipamento = {
-  nome: string;
-  potencia: string;
-  quantidade: string;
-  uso: string;
-};
 
 export default function SimulacaoScreen() {
     const [codigoUC, setCodigoUC] = useState('');
@@ -41,8 +36,7 @@ export default function SimulacaoScreen() {
     };
   
     const simularSistema = () => {
-      console.log({ codigoUC, consumo, localizacao, tipoImovel, espacoInstalacao, areaTelhado, tipoLigacao, equipamentos });
-      alert('Simulação iniciada (ver console).');
+      simulation(codigoUC, consumo, localizacao, tipoImovel, espacoInstalacao, areaTelhado, tipoLigacao, equipamentos);      
     };
   
     return (
@@ -98,6 +92,7 @@ export default function SimulacaoScreen() {
   
           <Divider style={{ marginVertical: 10 }} />
           <Text style={styles.subtitulo}>Equipamentos Elétricos Extras</Text>
+
           {equipamentos.map((eq, i) => (
             <View key={i} style={styles.equipamentoBox}>
               <TextInput label="Nome do equipamento" value={eq.nome} onChangeText={text => updateEquipamento(i, 'nome', text)} style={styles.input} />

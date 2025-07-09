@@ -5,8 +5,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import { Link } from 'expo-router';
 import { auth } from '../../../firebase.config';
-import handleRegister from '../../services/handleRegister';
-import { formatPhoneNumber, getCleanPhoneNumber } from '../../services/handlePhone'; // Importe as funções de serviço
+import handleRegister from '../../services/auth/handleRegister';
+import { formatPhoneNumber, getCleanPhoneNumber } from '../../services/auth/handlePhone'; // Importe as funções de serviço
 import SelectEstado from '../../components/SelectEstado';
 
 const screenWidth = Dimensions.get('window').width;
@@ -116,7 +116,7 @@ export default function RegisterScreen() {
               </Button>
 
               <View style={{ marginTop: 20 }}>
-                <Link href={"/auth/login" as any} asChild>
+                <Link href={"/auth/" as any} asChild>
                     <Pressable>
                         <Text style={{ fontSize: 16, color: "#08364E" }}>
                         Já possui uma conta? Entrar

@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     position: 'absolute', // Posiciona a FlatList acima do input
-    bottom: 60, // Ajusta a posição para ficar acima do TextInput (ajuste conforme necessário)
+    bottom: 70, // Ajusta a posição para ficar acima do TextInput (ajuste conforme necessário)
     width: 300, // Mesma largura do TextInput para alinhamento
     borderWidth: 1,
     borderColor: '#ccc',
@@ -91,7 +91,9 @@ const styles = StyleSheet.create({
     zIndex: 10, // Garante que a FlatList fique acima de outros elementos
   },
   item: {
-    padding: 10,
+    padding: 15,
+    borderColor: "#08364E",
+    borderRadius: 5,
   },
 });
 

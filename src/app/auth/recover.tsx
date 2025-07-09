@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import { Link } from 'expo-router';
 import { auth } from '../../../firebase.config';
-import handleForgotPassword from '../../services/handleForgotPassword';
+import handleForgotPassword from '../../services/auth/handleForgotPassword';
 
 const screenWidth = Dimensions.get('window').width;
 const aspectRatio = 500 / 250;

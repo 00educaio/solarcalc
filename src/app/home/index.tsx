@@ -3,28 +3,17 @@ import { View, StyleSheet, Alert } from 'react-native';
 import { Text, Button } from 'react-native-paper';
 import { Link, useRouter } from 'expo-router';
 import { auth } from '../../../firebase.config';
-import { signOut } from 'firebase/auth';
+import  handleLogout from '../../services/auth/handleLogout';
 
 export default function HomeScreen() {
   const router = useRouter();
   const user = auth.currentUser;
 
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      router.replace("/auth"); // redireciona para login
-      console.log("Usuário deslogado");
-      
-    } catch (error) {
-      Alert.alert("Erro ao sair", "Tente novamente.");
-    }
-  };
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Bem-vindo ao Simulador Solar!</Text>
       <Text style={styles.subtitle}>
-        {user?.displayName || user?.email || "Usuário"}
+        {user?.displayName || "Usuário"}
       </Text>
 
       <Link href="/home/simulation" asChild>
@@ -36,7 +25,7 @@ export default function HomeScreen() {
       <Button
         mode="outlined"
         style={styles.logoutButton}
-        onPress={handleLogout}
+        onPress={() => handleLogout(auth)}
         textColor="#08364E"
       >
         Sair da conta
