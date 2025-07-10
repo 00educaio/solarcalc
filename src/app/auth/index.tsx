@@ -3,7 +3,7 @@ import { View, StyleSheet, Image, Dimensions, Pressable } from 'react-native';
 import { TextInput, Button, Text } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { auth } from '../../../firebase.config'; 
 import handleLogin from '../../services/auth/handleLogin';
 
@@ -14,7 +14,9 @@ const imageHeight = screenWidth / aspectRatio;
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  if(auth.currentUser) {
+    router.replace("/home");
+  }
   return (
     <View style={{ flex: 1 }}>
       <StatusBar style="light" />

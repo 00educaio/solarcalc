@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
-import { TextInput, Button, Text, RadioButton, Divider, Menu, Provider } from 'react-native-paper';
-import { Equipamento, simulation } from '../../services/home/handleSimulation';
+import { ScrollView, View, StyleSheet, StatusBar, Dimensions, KeyboardAvoidingView } from 'react-native';
+import { TextInput, Button, Text, RadioButton, Divider, Menu, Avatar, Provider } from 'react-native-paper';
+import { Equipamento, simulation } from '../../services/home/registerSimulation';
+import { SafeAreaView } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 
+const statusBarHeight: number = (StatusBar.currentHeight ?? 30);
+const { width, height } = Dimensions.get('window');
 
 export default function SimulacaoScreen() {
     const [codigoUC, setCodigoUC] = useState('');
     const [consumo, setConsumo] = useState('');
     const [localizacao, setLocalizacao] = useState('');
     const [tipoImovel, setTipoImovel] = useState('');
+    
     const [espacoInstalacao, setEspacoInstalacao] = useState('Sim');
     const [areaTelhado, setAreaTelhado] = useState('');
     const [tipoLigacao, setTipoLigacao] = useState('');
     const [equipamentos, setEquipamentos] = useState<Equipamento[]>([]);
-  
-    const [menuTipoImovelVisible, setMenuTipoImovelVisible] = useState(false);
-    const [menuTipoLigacaoVisible, setMenuTipoLigacaoVisible] = useState(false);
-  
+    
     const addEquipamento = () => {
       setEquipamentos([...equipamentos, {
         nome: '',
@@ -40,118 +42,134 @@ export default function SimulacaoScreen() {
     };
   
     return (
-      <Provider>
-        <ScrollView style={styles.container}>
-          <TextInput label="Código da Unidade Consumidora" value={codigoUC} onChangeText={setCodigoUC} style={styles.input} />
-          <TextInput label="Maior consumo mensal (kWh/mês)" value={consumo} onChangeText={setConsumo} keyboardType="numeric" style={styles.input} />
-          <TextInput label="Localização completa" value={localizacao} onChangeText={setLocalizacao} style={styles.input} />
-  
-          <Menu
-            visible={menuTipoImovelVisible}
-            onDismiss={() => setMenuTipoImovelVisible(false)}
-            anchor={
-              <TextInput
-                label="Tipo de imóvel"
-                value={tipoImovel}
-                onFocus={() => setMenuTipoImovelVisible(true)}
-                style={styles.input}
-              />
-            }
-          >
-            {['Residencial', 'Comercial', 'Industrial'].map((item) => (
-              <Menu.Item key={item} onPress={() => { setTipoImovel(item); setMenuTipoImovelVisible(false); }} title={item} />
-            ))}
-          </Menu>
-  
-          <Text style={styles.label}>Possui espaço para instalação?</Text>
-          <RadioButton.Group onValueChange={setEspacoInstalacao} value={espacoInstalacao}>
-            <View style={styles.radioGroup}>
-              <RadioButton.Item label="Sim" value="Sim" />
-              <RadioButton.Item label="Não" value="Não" />
-            </View>
-          </RadioButton.Group>
-  
-          <TextInput label="Área disponível no telhado (m²)" value={areaTelhado} onChangeText={setAreaTelhado} keyboardType="numeric" style={styles.input} />
-  
-          <Menu
-            visible={menuTipoLigacaoVisible}
-            onDismiss={() => setMenuTipoLigacaoVisible(false)}
-            anchor={
-              <TextInput
-                label="Tipo de ligação"
-                value={tipoLigacao}
-                onFocus={() => setMenuTipoLigacaoVisible(true)}
-                style={styles.input}
-              />
-            }
-          >
-            {['Monofásica', 'Trifásica'].map((item) => (
-              <Menu.Item key={item} onPress={() => { setTipoLigacao(item); setMenuTipoLigacaoVisible(false); }} title={item} />
-            ))}
-          </Menu>
-  
-          <Divider style={{ marginVertical: 10 }} />
-          <Text style={styles.subtitulo}>Equipamentos Elétricos Extras</Text>
-
-          {equipamentos.map((eq, i) => (
-            <View key={i} style={styles.equipamentoBox}>
-              <TextInput label="Nome do equipamento" value={eq.nome} onChangeText={text => updateEquipamento(i, 'nome', text)} style={styles.input} />
-              <TextInput label="Potência (Watts)" value={eq.potencia} onChangeText={text => updateEquipamento(i, 'potencia', text)} keyboardType="numeric" style={styles.input} />
-              <TextInput label="Quantidade" value={eq.quantidade} onChangeText={text => updateEquipamento(i, 'quantidade', text)} keyboardType="numeric" style={styles.input} />
-  
-              <Menu
-                visible={eq.uso === 'MenuAberto'}
-                onDismiss={() => updateEquipamento(i, 'uso', '')}
-                anchor={
-                  <TextInput
-                    label="Previsão de uso"
-                    value={eq.uso === 'MenuAberto' ? '' : eq.uso}
-                    onFocus={() => updateEquipamento(i, 'uso', 'MenuAberto')}
-                    style={styles.input}
-                  />
-                }
-              >
-                {['Imediato', 'Futuro'].map((item) => (
-                  <Menu.Item
-                    key={item}
-                    onPress={() => updateEquipamento(i, 'uso', item)}
-                    title={item}
-                  />
+      <SafeAreaView style={{ flex: 1 }}>
+        <KeyboardAvoidingView behavior='padding' style={{flex: 1}}>
+          <Provider>
+            <ScrollView contentContainerStyle={styles.container} style={{ flex: 1 }}>
+              <View style={styles.header}>
+                <Text style={{ fontSize: 40, color: "#08364E" }}>Simulação</Text>
+                <Avatar.Image size={80} style={{alignSelf: 'flex-end'}} source={require('../../assets/final.png')} />
+              </View>
+              <View style={styles.card}>
+                <TextInput label="Código da Unidade Consumidora" value={codigoUC} onChangeText={setCodigoUC} style={styles.input} />
+                <TextInput label="Maior consumo mensal (kWh/mês)" value={consumo} onChangeText={setConsumo} keyboardType="numeric" style={styles.input} />
+                <TextInput label="Localização completa" value={localizacao} onChangeText={setLocalizacao} style={styles.input} />
+                
+                <View><Text style={styles.label}>Tipo de imóvel</Text></View>
+                <View style={styles.pickerContainer}>
+                  <Picker
+                    selectedValue={tipoImovel}
+                    onValueChange={(itemValue) => setTipoImovel(itemValue as string)}
+                    style={styles.picker}
+                    mode="dropdown"
+                  >
+                    <Picker.Item label="Selecione o tipo de imóvel" value="" />
+                    {['Residencial', 'Comercial', 'Industrial'].map((item, index) => (
+                      <Picker.Item key={index} label={item} value={item} />
+                    ))}
+                  </Picker>
+                </View>
+                
+                <Text style={styles.label}>Possui espaço para instalação?</Text>
+                <RadioButton.Group onValueChange={setEspacoInstalacao} value={espacoInstalacao}>
+                  <View style={styles.radioGroup}>
+                    <RadioButton.Item label="Sim" value="Sim" />
+                    <RadioButton.Item label="Não" value="Não" />
+                  </View>
+                </RadioButton.Group>
+                
+                <TextInput label="Área disponível no telhado (m²)" value={areaTelhado} onChangeText={setAreaTelhado} keyboardType="numeric" style={styles.input} />
+                
+                <Text style={styles.label}>Tipo de ligação</Text>
+                <RadioButton.Group onValueChange={setTipoLigacao} value={tipoLigacao}>
+                  <View style={styles.radioGroup}>
+                    <RadioButton.Item label="Monofásica" value="Monofásica" />
+                    <RadioButton.Item label="Trifásica" value="Trifásica" />
+                  </View>
+                </RadioButton.Group>
+                <Divider style={{ marginVertical: 10 }} />
+                <Text style={styles.subtitulo}>Equipamentos Elétricos Extras</Text>
+                {equipamentos.map((eq, i) => (
+                  <View key={i} style={styles.equipamentoBox}>
+                    <TextInput label="Nome do equipamento" value={eq.nome} onChangeText={text => updateEquipamento(i, 'nome', text)} style={styles.inputEquipamento} /> {/* Ajustado para inputEquipamento */}
+                    <TextInput label="Potência (Watts)" value={eq.potencia} onChangeText={text => updateEquipamento(i, 'potencia', text)} keyboardType="numeric" style={styles.inputEquipamento} /> {/* Ajustado */}
+                    <TextInput label="Quantidade" value={eq.quantidade} onChangeText={text => updateEquipamento(i, 'quantidade', text)} keyboardType="numeric" style={styles.inputEquipamento} /> {/* Ajustado */}
+                    <Menu
+                      visible={eq.uso === 'MenuAberto'}
+                      onDismiss={() => updateEquipamento(i, 'uso', '')}
+                      anchor={
+                        <TextInput
+                          label="Previsão de uso"
+                          value={eq.uso === 'MenuAberto' ? '' : eq.uso}
+                          onFocus={() => updateEquipamento(i, 'uso', 'MenuAberto')}
+                          style={styles.inputEquipamento} // Ajustado
+                        />
+                      }
+                    >
+                      {['Imediato', 'Futuro'].map((item) => (
+                        <Menu.Item
+                          key={item}
+                          onPress={() => updateEquipamento(i, 'uso', item)}
+                          title={item}
+                        />
+                      ))}
+                    </Menu>
+                  </View>
                 ))}
-              </Menu>
-            </View>
-          ))}
-  
-          <Button onPress={addEquipamento} mode="outlined" style={{ marginVertical: 10 }}>
-            Adicionar outro equipamento
-          </Button>
-  
-          <Button mode="contained" onPress={simularSistema} style={styles.button}>
-            Simular Sistema Ideal
-          </Button>
-        </ScrollView>
-      </Provider>
+                <Button onPress={addEquipamento} mode="outlined" style={{ marginVertical: 10, width: '100%'}}>
+                  Adicionar outro equipamento
+                </Button>
+              </View>
+              <Button mode="contained" onPress={simularSistema} style={styles.button}>
+                Simular Sistema Ideal
+              </Button>
+            </ScrollView>
+          </Provider>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
     );
   }
   
   const styles = StyleSheet.create({
     container: {
-      marginVertical: 40,
-      marginHorizontal: 15,
-      padding: 16,
-      backgroundColor: '#fff'
+      flexGrow: 1,
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      backgroundColor: '#ffffff',
+      paddingBottom: 20,
     },
+    // Estilo para TextInputs dentro do card principal
     input: {
-      marginBottom: 12
+      borderWidth: 1,
+      borderColor: "#08364E",
+      borderRadius: 10,
+      backgroundColor: "#ffffff",
+      marginBottom: 16,
+      width: '100%', // Use 100% da largura do contêiner pai
+      height: 50,
+    },
+    // Estilo para TextInputs dentro de equipamentoBox (se precisar de largura diferente)
+    inputEquipamento: {
+      borderWidth: 1,
+      borderColor: "#08364E",
+      borderRadius: 10,
+      backgroundColor: "#ffffff",
+      marginBottom: 16,
+      width: '100%', // Também 100% da largura do seu contêiner (equipamentoBox)
+      height: 50,
     },
     label: {
       marginTop: 10,
       fontSize: 16,
-      fontWeight: 'bold'
+      fontWeight: 'bold',
+      marginBottom: 5,
+      alignSelf: 'flex-start',
     },
     radioGroup: {
       flexDirection: 'row',
-      justifyContent: 'flex-start'
+      justifyContent: 'flex-start',
+      width: '100%',
+      marginBottom: 16,
     },
     subtitulo: {
       fontSize: 18,
@@ -162,12 +180,52 @@ export default function SimulacaoScreen() {
     equipamentoBox: {
       marginBottom: 16,
       padding: 10,
-      backgroundColor: '#f5f5f5',
-      borderRadius: 8
+      backgroundColor: '#f5f5f5', // Corrigi para um tom de cinza, `fffff` não é uma cor válida
+      borderRadius: 8,
+      width: '100%',
     },
     button: {
       backgroundColor: '#08364E',
-      marginVertical: 20
-    }
+      marginTop: 20,
+      marginBottom: 30,
+      width: '90%', // Ajustei para 90% para ser responsivo
+      height: 50,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 8,
+    },
+    header: {
+      display: 'flex',
+      flexDirection: 'row',
+      marginTop: statusBarHeight,
+      textAlign: 'center',
+      alignSelf: 'flex-start',
+      alignItems: "center",
+      justifyContent: "space-between",
+      padding: 16,
+      width: '100%',
+    },
+    card: {
+      padding: 20,
+      borderRadius: 12,
+      alignItems: 'flex-start',
+      borderWidth: 1,
+      borderColor: "#08364E",
+      width: width * 0.9,
+      alignSelf: 'center',
+    },
+    pickerContainer: {
+      borderWidth: 1,
+      borderColor: "#08364E",
+      borderRadius: 10,
+      backgroundColor: "#ffffff",
+      marginBottom: 16,
+      width: '100%',
+      overflow: 'hidden',
+    },
+    picker: {
+      width: '100%',
+      height: 50,
+      color: '#000',
+    },
   });
-  

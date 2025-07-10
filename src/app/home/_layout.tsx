@@ -12,5 +12,9 @@ export default function HomeLayout() {
     }
   }, [user]);
 
-  return <Stack screenOptions={{ headerBackVisible: false, headerShown: false }} />;
+  return(
+      <Stack screenOptions={{ headerBackVisible: false, headerShown: false }} />
+
+
+  )
 }

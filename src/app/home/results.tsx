@@ -2,18 +2,12 @@ import React from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { Text, Button, Surface } from 'react-native-paper';
 import { useRouter, useLocalSearchParams } from 'expo-router';
+import { SimulationResult } from '@/src/services/home/registerSimulation';
 
-type ResultsParams = {
-  tamanhoSistema?: string;
-  qtdPaineis?: string;
-  economia?: string;
-  custoProjeto?: string;
-  payback?: string;
-};
 
 export default function ResultsScreen() {
   const router = useRouter();
-  const params = useLocalSearchParams() as ResultsParams;
+  const params = useLocalSearchParams() as SimulationResult;
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
