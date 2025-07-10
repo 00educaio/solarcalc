@@ -22,6 +22,12 @@ export default function HomeScreen() {
         </Button>
       </Link>
 
+      <Link href="/home/allsimulation" asChild>
+        <Button mode="contained" style={styles.button}>
+          Minhas Simulações
+        </Button>
+      </Link>
+
       <Button
         mode="outlined"
         style={styles.logoutButton}

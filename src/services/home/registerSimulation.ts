@@ -1,14 +1,8 @@
 import { router } from "expo-router";
-import { addDoc, collection, doc, Firestore, getFirestore, setDoc } from "firebase/firestore";
+import { addDoc, collection, Firestore, getFirestore, Timestamp } from "firebase/firestore";
 import { auth } from "../../../firebase.config";
 import { User } from "firebase/auth";
-
-export type Equipamento = {
-  nome: string;
-  potencia: string;
-  quantidade: string;
-  uso: string;
-};
+import { Equipamento, registerEquipamentos } from "./registerEquipamentos";
 
 export type SimulationResult = {
   tamanhoSistema?: number;
@@ -16,6 +10,8 @@ export type SimulationResult = {
   economia?: number;
   custoProjeto?: number;
   payback?: number;
+  equipamentos?: Equipamento[];
+  createdAt?: Timestamp;
 }
 export const simulation = async (codigoUC: string, consumo: string, localizacao: string, tipoImovel: string, espacoInstalacao: string, areaTelhado: string, tipoLigacao: string, equipamentos: Equipamento[]) => {
 
@@ -33,15 +29,11 @@ export const simulation = async (codigoUC: string, consumo: string, localizacao:
     // })
     try {
       const resultado: SimulationResult = calculoMock();
-      await saveSimulation(resultado);
+      const docId = await saveSimulation(resultado, equipamentos);
       router.replace({
           pathname: '/home/results',
           params: {
-            tamanhoSistema: resultado.tamanhoSistema,
-            qtdPaineis: resultado.qtdPaineis,
-            economia: resultado.economia,
-            custoProjeto: resultado.custoProjeto,
-            payback: resultado.payback,
+            simulationId: docId,
           },
         },        
       );
@@ -59,27 +51,34 @@ const calculoMock = () : SimulationResult => {
         return Math.floor(Math.random() * final)
     };
 
-    const Simulationresult: SimulationResult = {
+    const simulationResult: SimulationResult = {
       tamanhoSistema: numberRamdom(1000),
       qtdPaineis: numberRamdom(100),
       economia: numberRamdom(10000),
       custoProjeto: numberRamdom(100),
       payback: numberRamdom(100),
+      
     };
-    return Simulationresult;
+    return simulationResult;
 }
 
-const saveSimulation = async (data: SimulationResult) : Promise<void> => {
+const saveSimulation = async (data: SimulationResult, equipamentos: Equipamento[]) : Promise<string> => {
   const db: Firestore = getFirestore();
   const user: User | null = auth.currentUser;
   if (!user) {
     throw new Error("Usuário não encontrado");
   }
-  await addDoc(collection(db, "simulations"), {
+  const docRef = await addDoc(collection(db, "simulations"), {
     user: user.uid,
     ...data,
     createdAt: new Date(),
   });
+  const docId = docRef.id;
+  if (equipamentos.length > 0) {
+    await registerEquipamentos(equipamentos, docId);
+    
+  }
   console.log("Simulação salva com sucesso");
+  return docId;
   
 }

@@ -1,6 +1,6 @@
 # Funcionalidades
-1. Lógica do cálculo
-2. Simplificar a modelagem de dados
+1. Revisar O último commit
+2. Lógica do cálculo
 3. Implementar as novas telas
 
 # Polimento

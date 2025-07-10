@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { ScrollView, View, StyleSheet, StatusBar, Dimensions, KeyboardAvoidingView } from 'react-native';
 import { TextInput, Button, Text, RadioButton, Divider, Menu, Avatar, Provider } from 'react-native-paper';
-import { Equipamento, simulation } from '../../services/home/registerSimulation';
+import {  simulation } from '../../services/home/registerSimulation';
 import { SafeAreaView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import equipamentoJsons from '../../assets/equipamentos.json';
+import { Equipamento } from '@/src/services/home/registerEquipamentos';
 
 const statusBarHeight: number = (StatusBar.currentHeight ?? 30);
-const { width, height } = Dimensions.get('window');
-
+const { width } = Dimensions.get('window');
+const equipamentoJson = equipamentoJsons as Equipamento[];
 export default function SimulacaoScreen() {
     const [codigoUC, setCodigoUC] = useState('');
     const [consumo, setConsumo] = useState('');
@@ -18,27 +20,23 @@ export default function SimulacaoScreen() {
     const [areaTelhado, setAreaTelhado] = useState('');
     const [tipoLigacao, setTipoLigacao] = useState('');
     const [equipamentos, setEquipamentos] = useState<Equipamento[]>([]);
-    
-    const addEquipamento = () => {
-      setEquipamentos([...equipamentos, {
-        nome: '',
-        potencia: '',
-        quantidade: '',
-        uso: 'Imediato'
-      }]);
-    };
-  
-    const updateEquipamento = (index: number, field: keyof Equipamento, value: string) => {
-      const novos = [...equipamentos];
-      novos[index] = {
-        ...novos[index],
-        [field]: value
-      };
-      setEquipamentos(novos);
-    };
-  
+
+    const [selectedEquipamento, setSelectedEquipamento] = useState<Equipamento | null>(null);
+    const [equipamentoQtd, setEquipamentoQtd] = useState('1');
     const simularSistema = () => {
       simulation(codigoUC, consumo, localizacao, tipoImovel, espacoInstalacao, areaTelhado, tipoLigacao, equipamentos);      
+    };
+    
+    const addEquipamento = () => {
+      if (selectedEquipamento && parseInt(equipamentoQtd)) {
+        const newEquipamento : Equipamento = { ...selectedEquipamento, qtd: parseInt(equipamentoQtd) };
+        setEquipamentos([...equipamentos, newEquipamento]);
+        setSelectedEquipamento(null);
+        setEquipamentoQtd('1')
+      }
+      else {
+        alert('Selecione um equipamento');
+      }
     };
   
     return (
@@ -88,37 +86,45 @@ export default function SimulacaoScreen() {
                   </View>
                 </RadioButton.Group>
                 <Divider style={{ marginVertical: 10 }} />
+
                 <Text style={styles.subtitulo}>Equipamentos Elétricos Extras</Text>
-                {equipamentos.map((eq, i) => (
-                  <View key={i} style={styles.equipamentoBox}>
-                    <TextInput label="Nome do equipamento" value={eq.nome} onChangeText={text => updateEquipamento(i, 'nome', text)} style={styles.inputEquipamento} /> {/* Ajustado para inputEquipamento */}
-                    <TextInput label="Potência (Watts)" value={eq.potencia} onChangeText={text => updateEquipamento(i, 'potencia', text)} keyboardType="numeric" style={styles.inputEquipamento} /> {/* Ajustado */}
-                    <TextInput label="Quantidade" value={eq.quantidade} onChangeText={text => updateEquipamento(i, 'quantidade', text)} keyboardType="numeric" style={styles.inputEquipamento} /> {/* Ajustado */}
-                    <Menu
-                      visible={eq.uso === 'MenuAberto'}
-                      onDismiss={() => updateEquipamento(i, 'uso', '')}
-                      anchor={
-                        <TextInput
-                          label="Previsão de uso"
-                          value={eq.uso === 'MenuAberto' ? '' : eq.uso}
-                          onFocus={() => updateEquipamento(i, 'uso', 'MenuAberto')}
-                          style={styles.inputEquipamento} // Ajustado
-                        />
-                      }
-                    >
-                      {['Imediato', 'Futuro'].map((item) => (
-                        <Menu.Item
-                          key={item}
-                          onPress={() => updateEquipamento(i, 'uso', item)}
-                          title={item}
-                        />
-                      ))}
-                    </Menu>
-                  </View>
-                ))}
+                <Picker
+                  selectedValue={selectedEquipamento}
+                  onValueChange={(itemValue) => setSelectedEquipamento(itemValue as Equipamento)}
+                  style={styles.picker}
+                  mode="dropdown"
+                  >
+                  <Picker.Item label="Selecione o equipamento" value={equipamentoJson[0].nome} />
+                  {equipamentoJson.map((item, index) => (
+                    <Picker.Item key={index} label={item.nome} value={item} />
+                  ))}                  
+
+                </Picker>
+                <TextInput
+                  label="Quantidade"
+                  value={equipamentoQtd}
+                  onChangeText={setEquipamentoQtd}
+                  keyboardType="numeric"
+                  style={styles.input}
+                />
                 <Button onPress={addEquipamento} mode="outlined" style={{ marginVertical: 10, width: '100%'}}>
-                  Adicionar outro equipamento
+                  Adicionar equipamento selecionado
                 </Button>
+
+                {equipamentos.length > 0 && (
+                  <View style={{ width: '100%', marginTop: 10 }}>
+                    <Text style={styles.label}>Equipamentos Adicionados:</Text>
+                    {equipamentos.map((eq, index) => (
+                      <View key={index} style={styles.equipamentoBox}>
+                        <Text>Nome: {eq.nome}</Text>
+                        <Text>Consumo/hora: {eq.consumo_por_hora_kwh} kWh</Text>
+                        <Text>Potência: {eq.potencia_watts} Watts</Text>
+                        <Text>Quantidade: {eq.qtd}</Text>
+                      </View>
+                    ))}
+                  </View>
+                )}
+
               </View>
               <Button mode="contained" onPress={simularSistema} style={styles.button}>
                 Simular Sistema Ideal
