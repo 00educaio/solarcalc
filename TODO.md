@@ -7,4 +7,4 @@
 # Polimento
 1. Tratar erros e execeções na Autentificação(senha curta, email inválido, etc)
 2. Transições e Splash 
-#''
+#'
