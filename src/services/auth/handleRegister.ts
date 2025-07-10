@@ -15,9 +15,10 @@ const handleRegister = (auth: Auth, name: string, email: string, senha: string, 
           });
 
           await setDoc(doc(db, "users", user.uid), {
-            name: name,
-            email: email,
-            createdAt: new Date()
+            createdAt: new Date(),
+            phone: phone,
+            estado: estado
+
           });
 
           console.log("Registrado", user);

@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { ScrollView, View, StyleSheet, StatusBar, Dimensions, KeyboardAvoidingView } from 'react-native';
 import { TextInput, Button, Text, RadioButton, Divider, Menu, Avatar, Provider } from 'react-native-paper';
-import {  simulation } from '../../services/home/registerSimulation';
 import { SafeAreaView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import equipamentoJsons from '../../assets/equipamentos.json';
+import { simulationManager, SimulationData } from '../../services/home/registerSimulation';
 import { Equipamento } from '@/src/services/home/registerEquipamentos';
 
 const statusBarHeight: number = (StatusBar.currentHeight ?? 30);
 const { width } = Dimensions.get('window');
+
 const equipamentoJson = equipamentoJsons as Equipamento[];
+
 export default function SimulacaoScreen() {
     const [codigoUC, setCodigoUC] = useState('');
     const [consumo, setConsumo] = useState('');
@@ -23,8 +25,19 @@ export default function SimulacaoScreen() {
 
     const [selectedEquipamento, setSelectedEquipamento] = useState<Equipamento | null>(null);
     const [equipamentoQtd, setEquipamentoQtd] = useState('1');
+
     const simularSistema = () => {
-      simulation(codigoUC, consumo, localizacao, tipoImovel, espacoInstalacao, areaTelhado, tipoLigacao, equipamentos);      
+      const simulationData: SimulationData = {
+        codigoUC: codigoUC,
+        consumo: consumo,
+        localizacao: localizacao,
+        tipoImovel: tipoImovel,
+        espacoInstalacao: espacoInstalacao,
+        areaTelhado: areaTelhado,
+        tipoLigacao: tipoLigacao,
+      
+      }
+      simulationManager(simulationData, equipamentos);      
     };
     
     const addEquipamento = () => {

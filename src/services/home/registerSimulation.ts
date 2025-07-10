@@ -5,6 +5,7 @@ import { User } from "firebase/auth";
 import { Equipamento, registerEquipamentos } from "./registerEquipamentos";
 
 export type SimulationResult = {
+  dadosIniciais: SimulationData;
   tamanhoSistema?: number;
   qtdPaineis?: number;
   economia?: number;
@@ -13,7 +14,18 @@ export type SimulationResult = {
   equipamentos?: Equipamento[];
   createdAt?: Timestamp;
 }
-export const simulation = async (codigoUC: string, consumo: string, localizacao: string, tipoImovel: string, espacoInstalacao: string, areaTelhado: string, tipoLigacao: string, equipamentos: Equipamento[]) => {
+
+export type SimulationData = {
+  codigoUC: string,
+  consumo: string,
+  localizacao: string,
+  tipoImovel: string,
+  espacoInstalacao: string,
+  areaTelhado: string,
+  tipoLigacao: string,
+
+}
+export const simulationManager = async (dadosSimulacao: SimulationData, equipamentos: Equipamento[]) => {
 
     // console.log('codigoUC', codigoUC);
     // console.log('consumo', consumo);
@@ -28,7 +40,7 @@ export const simulation = async (codigoUC: string, consumo: string, localizacao:
     //   console.log('equipamento', equipamento);
     // })
     try {
-      const resultado: SimulationResult = calculoMock();
+      const resultado: SimulationResult = calculoMock(dadosSimulacao);
       const docId = await saveSimulation(resultado, equipamentos);
       router.replace({
           pathname: '/home/results',
@@ -45,13 +57,13 @@ export const simulation = async (codigoUC: string, consumo: string, localizacao:
 }
 
 //Brincando
-const calculoMock = () : SimulationResult => {
-
+const calculoMock = (dados: SimulationData) : SimulationResult => {
     const numberRamdom = (final: number) : number => {
         return Math.floor(Math.random() * final)
     };
 
     const simulationResult: SimulationResult = {
+      dadosIniciais: dados,
       tamanhoSistema: numberRamdom(1000),
       qtdPaineis: numberRamdom(100),
       economia: numberRamdom(10000),
