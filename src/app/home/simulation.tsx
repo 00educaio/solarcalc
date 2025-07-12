@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import { simulationManager, SimulationData } from '../../services/home/registerSimulation';
 import { Equipamento } from '@/src/services/home/registerEquipamentos';
+import ModalEquipamento from '@/src/components/ModalEquipamento';
 
 const statusBarHeight: number = (StatusBar.currentHeight ?? 30);
 const { width } = Dimensions.get('window');
@@ -150,6 +151,8 @@ export default function SimulacaoScreen() {
                 <Button onPress={addEquipamento} mode="outlined" style={{ marginVertical: 10, width: '100%'}}>
                   Adicionar equipamento selecionado
                 </Button>
+
+                <ModalEquipamento onSubmit={(equipamento) => setEquipamentos([...equipamentos, equipamento])} />
 
                 {equipamentos.length > 0 && (
                   <View style={{ width: '100%', marginTop: 10 }}>
