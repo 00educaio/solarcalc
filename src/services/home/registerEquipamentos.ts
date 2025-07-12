@@ -1,10 +1,11 @@
 import { addDoc, collection, Firestore, getFirestore } from "firebase/firestore";
 
 export type Equipamento = {
+    id?: string 
     nome: string;
-    consumo_por_hora_kwh: number;
-    potencia_watts: number;
-    qtd: number
+    consumo_por_hora_kwh: string;
+    potencia_watts: string;
+    qtd: string
   };
 export const registerEquipamentos = async (equipamentos: Equipamento[], simulationId: string) : Promise<void> => {
     const db: Firestore = getFirestore();
