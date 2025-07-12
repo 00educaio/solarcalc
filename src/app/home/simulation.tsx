@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 import { ScrollView, View, StyleSheet, StatusBar, Dimensions, KeyboardAvoidingView } from 'react-native';
-import { TextInput, Button, Text, RadioButton, Divider, Menu, Avatar, Provider } from 'react-native-paper';
+import { TextInput, Button, Text, RadioButton, Divider, Avatar, Provider, ActivityIndicator } from 'react-native-paper';
 import { SafeAreaView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import equipamentoJsons from '../../assets/equipamentos.json';
+import { useEffect } from 'react';
+import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import { simulationManager, SimulationData } from '../../services/home/registerSimulation';
 import { Equipamento } from '@/src/services/home/registerEquipamentos';
 
 const statusBarHeight: number = (StatusBar.currentHeight ?? 30);
 const { width } = Dimensions.get('window');
-
-const equipamentoJson = equipamentoJsons as Equipamento[];
 
 export default function SimulacaoScreen() {
     const [codigoUC, setCodigoUC] = useState('');
@@ -21,10 +20,31 @@ export default function SimulacaoScreen() {
     const [espacoInstalacao, setEspacoInstalacao] = useState('Sim');
     const [areaTelhado, setAreaTelhado] = useState('');
     const [tipoLigacao, setTipoLigacao] = useState('');
-    const [equipamentos, setEquipamentos] = useState<Equipamento[]>([]);
 
+    const [equipamentosProntos, setEquipamentosProntos] = useState<Equipamento[]>([]);
+    const [equipamentos, setEquipamentos] = useState<Equipamento[]>([]);
     const [selectedEquipamento, setSelectedEquipamento] = useState<Equipamento | null>(null);
     const [equipamentoQtd, setEquipamentoQtd] = useState('1');
+    
+
+    useEffect(() => {
+      const fetchEquipamentos = async () => {
+        try {
+          const db = getFirestore();
+          const snapshot = await getDocs(collection(db, "equipamentos_padrao"));
+          const dados = snapshot.docs.map(doc => ({
+            ...doc.data(),
+          })) as Equipamento[];
+          setEquipamentosProntos(dados);
+        } catch (error) {
+          console.error("Erro ao buscar equipamentos:", error);
+        }
+      };
+      
+      fetchEquipamentos();
+    
+    }, []);
+    
 
     const simularSistema = () => {
       const simulationData: SimulationData = {
@@ -42,7 +62,7 @@ export default function SimulacaoScreen() {
     
     const addEquipamento = () => {
       if (selectedEquipamento && parseInt(equipamentoQtd)) {
-        const newEquipamento : Equipamento = { ...selectedEquipamento, qtd: parseInt(equipamentoQtd) };
+        const newEquipamento : Equipamento = { ...selectedEquipamento, qtd: equipamentoQtd };
         setEquipamentos([...equipamentos, newEquipamento]);
         setSelectedEquipamento(null);
         setEquipamentoQtd('1')
@@ -101,18 +121,25 @@ export default function SimulacaoScreen() {
                 <Divider style={{ marginVertical: 10 }} />
 
                 <Text style={styles.subtitulo}>Equipamentos Elétricos Extras</Text>
-                <Picker
-                  selectedValue={selectedEquipamento}
-                  onValueChange={(itemValue) => setSelectedEquipamento(itemValue as Equipamento)}
-                  style={styles.picker}
-                  mode="dropdown"
+                
+                {equipamentosProntos.length === 0 ? (
+                <View style={{ alignItems: 'center', marginVertical: 10 }}>
+                  <ActivityIndicator size="large" color="#08364E" />
+                  <Text>Carregando equipamentos...</Text>
+                </View>
+                ) : (
+                  <Picker
+                    selectedValue={selectedEquipamento}
+                    onValueChange={(itemValue) => setSelectedEquipamento(itemValue as Equipamento | null)}
+                    style={styles.picker}
+                    mode="dropdown"
                   >
-                  <Picker.Item label="Selecione o equipamento" value={equipamentoJson[0].nome} />
-                  {equipamentoJson.map((item, index) => (
-                    <Picker.Item key={index} label={item.nome} value={item} />
-                  ))}                  
-
-                </Picker>
+                    <Picker.Item label="Selecione o equipamento" value={equipamentosProntos[0].nome} />
+                    {equipamentosProntos.map((item, index) => (
+                      <Picker.Item key={index} label={item.nome} value={item} />
+                    ))}
+                  </Picker>
+              )}
                 <TextInput
                   label="Quantidade"
                   value={equipamentoQtd}
@@ -244,7 +271,7 @@ export default function SimulacaoScreen() {
     },
     picker: {
       width: '100%',
-      height: 50,
+      height: 60,
       color: '#000',
     },
   });

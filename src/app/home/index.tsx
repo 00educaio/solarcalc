@@ -4,10 +4,19 @@ import { Text, Button } from 'react-native-paper';
 import { Link, useRouter } from 'expo-router';
 import { auth } from '../../../firebase.config';
 import  handleLogout from '../../services/auth/handleLogout';
+import { seedEquipamentosPadrao } from '@/src/services/seedEquipamentosPadrao';
 
 export default function HomeScreen() {
-  const router = useRouter();
   const user = auth.currentUser;
+
+  const handleSeed = async () => {
+    try {
+      await seedEquipamentosPadrao();
+      Alert.alert("Seed finalizada com sucesso!");
+    } catch (err) {
+      Alert.alert("Erro ao executar seed.");
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -27,6 +36,12 @@ export default function HomeScreen() {
           Minhas Simulações
         </Button>
       </Link>
+
+      <View>
+        <Button mode="contained" style={styles.button} onPress={handleSeed}>
+          Seeder
+        </Button>
+      </View>
 
       <Button
         mode="outlined"
