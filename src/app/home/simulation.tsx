@@ -72,7 +72,13 @@ export default function SimulacaoScreen() {
         alert('Selecione um equipamento');
       }
     };
-  
+    
+    const removeEquipamento = (index: number) => {
+      const newEquipamentos = [...equipamentos];
+      newEquipamentos.splice(index, 1);
+      setEquipamentos(newEquipamentos);
+    };
+
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <KeyboardAvoidingView behavior='padding' style={{flex: 1}}>
@@ -153,7 +159,7 @@ export default function SimulacaoScreen() {
                 </Button>
 
                 <ModalEquipamento onSubmit={(equipamento) => setEquipamentos([...equipamentos, equipamento])} />
-
+                
                 {equipamentos.length > 0 && (
                   <View style={{ width: '100%', marginTop: 10 }}>
                     <Text style={styles.label}>Equipamentos Adicionados:</Text>
@@ -163,8 +169,13 @@ export default function SimulacaoScreen() {
                         <Text>Consumo/hora: {eq.consumo_por_hora_kwh} kWh</Text>
                         <Text>Potência: {eq.potencia_watts} Watts</Text>
                         <Text>Quantidade: {eq.qtd}</Text>
+                        <Button onPress={() => removeEquipamento(index)} mode="outlined" style={{ marginVertical: 10, width: '100%', borderWidth: 1, height: 40}}>
+                          Remover
+                        </Button>
                       </View>
                     ))}
+                    
+
                   </View>
                 )}
 
