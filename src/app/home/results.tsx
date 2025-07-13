@@ -78,7 +78,7 @@ export default function ResultsScreen() {
           {simulacao.equipamentos?.map((equipamento, index) => (
             <View key={index} style={styles.infoRow}>
               <Text style={styles.label}>{equipamento.nome}: </Text>
-              <Text style={styles.value}>{equipamento.consumo_por_hora_kwh}</Text>
+              <Text style={styles.value}>{equipamento.kilowatts_hora_mes}</Text>
             </View>
           ))}
         </Surface>

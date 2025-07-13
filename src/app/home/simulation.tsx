@@ -166,8 +166,7 @@ export default function SimulacaoScreen() {
                     {equipamentos.map((eq, index) => (
                       <View key={index} style={styles.equipamentoBox}>
                         <Text>Nome: {eq.nome}</Text>
-                        <Text>Consumo/hora: {eq.consumo_por_hora_kwh} kWh</Text>
-                        <Text>Potência: {eq.potencia_watts} Watts</Text>
+                        <Text>Kilowatts/hora mês: {eq.kilowatts_hora_mes} kWh/mês</Text>
                         <Text>Quantidade: {eq.qtd}</Text>
                         <Button onPress={() => removeEquipamento(index)} mode="outlined" style={{ marginVertical: 10, width: '100%', borderWidth: 1, height: 40}}>
                           Remover

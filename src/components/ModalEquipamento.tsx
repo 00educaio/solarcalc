@@ -9,8 +9,7 @@ type Props = {
 const ModalEquipamento: React.FC<Props> = ({ onSubmit }) => {
   const [visible, setVisible] = useState(false);
   const [nome, setNome] = useState('');
-  const [consumo, setConsumo] = useState('');
-  const [potencia, setPotencia] = useState('');
+  const [kilowatts_hora_mes, setkilowatts_hora_mes] = useState('');
   const [quantidade, setQuantidade] = useState('');
 
   const showModal = () => setVisible(true);
@@ -19,14 +18,12 @@ const ModalEquipamento: React.FC<Props> = ({ onSubmit }) => {
   const addCustomEquipamento = () => {
     const equipamento: Equipamento = {
       nome: nome,
-      consumo_por_hora_kwh: consumo,
-      potencia_watts: potencia,
+      kilowatts_hora_mes: kilowatts_hora_mes,
       qtd: quantidade,
     };
     onSubmit(equipamento);
     setNome('');
-    setConsumo('');
-    setPotencia('');
+    setkilowatts_hora_mes('');
     setQuantidade('');
     hideModal();
   };
@@ -51,16 +48,8 @@ const ModalEquipamento: React.FC<Props> = ({ onSubmit }) => {
             />
             <TextInput
               placeholder="Consumo Por Hora (kWh)"
-              value={consumo}
-              onChangeText={setConsumo}
-              keyboardType="numeric"
-              style={styles.input}
-              placeholderTextColor="#888"
-            />
-            <TextInput
-              placeholder="Potência (Watts)"
-              value={potencia}
-              onChangeText={setPotencia}
+              value={kilowatts_hora_mes}
+              onChangeText={setkilowatts_hora_mes}
               keyboardType="numeric"
               style={styles.input}
               placeholderTextColor="#888"

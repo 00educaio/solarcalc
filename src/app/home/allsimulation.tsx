@@ -72,8 +72,7 @@ export default function SimulationResultsScreen() {
                                     <View>
                                         <Text> Equipamento #{index + 1}</Text>
                                         <Text> Nome: {equipamento.nome}</Text>
-                                        <Text> Consumo: {equipamento.consumo_por_hora_kwh}</Text>
-                                        <Text> Pontecia: {equipamento.potencia_watts}</Text>
+                                        <Text> Consumo: {equipamento.kilowatts_hora_mes}</Text>
                                         <Text> Quantidade: {equipamento.qtd}</Text>
 
                                     </View>    
