@@ -1,9 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { ScrollView, View, StyleSheet, StatusBar, Dimensions, ActivityIndicator, SafeAreaView } from 'react-native';
-import { Text, Avatar, Card } from 'react-native-paper';
+import { Text, Avatar, Card, Divider, Button } from 'react-native-paper';
 import { SimulationResult } from '../../services/home/registerSimulation'; // Ajuste o caminho conforme necessário
 import { getAllSimulationsAndEquipments } from '@/src/services/home/getAllSimulation';
+import StatusIndicator from '@/src/components/StatusIndicator';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { navegateWithSimulation, SimulationWithEquipamentos } from '@/src/services/home/navegateWithSimulation';
+import { router } from 'expo-router';
 
+const LeftContent = (props: any) => (
+  <Avatar.Icon
+    {...props}
+    style={{ backgroundColor: '#f39c12' }} // cor de fundo
+    icon={() => (
+      <FontAwesome5 name="solar-panel" size={20} color="white" /> // cor do ícone
+    )}
+  />
+);
 const statusBarHeight: number = (StatusBar.currentHeight ?? 30);
 const { height, width } = Dimensions.get('window');
 
@@ -47,46 +60,69 @@ export default function SimulationResultsScreen() {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <ScrollView contentContainerStyle={styles.container} style={{ flex: 1 }}>
-                <View style={styles.header}>
-                    <Text style={{ fontSize: 40, color: "#08364E" }}>Resultados</Text>
-                    <Avatar.Image size={80} style={{ alignSelf: 'flex-end' }} source={require('../../assets/final.png')} />
-                </View>
-
-                {simulations.length === 0 ? (
-                    <View style={styles.noResultsContainer}>
-                        <Text style={styles.noResultsText}>Nenhuma simulação encontrada.</Text>
-                        <Text style={styles.noResultsSubText}>Faça uma simulação para ver seus resultados aqui!</Text>
-                    </View>
-                ) : (
-                    <View style={styles.resultsList}>
-                        {simulations.map((x, index) => (
-                            <Card key={index} style={styles.resultCard}>
-                                <Card.Content>
-                                    <Text style={styles.cardTitle}>Simulação #{index + 1} -- {x.createdAt ? x.createdAt.toDate().toLocaleDateString(): "Data desconhecida" }</Text>
-                                    <Text style={styles.cardLabel}>📊 Tamanho estimado do sistema (kWp): {x.tamanhoSistema}</Text>
-                                    <Text style={styles.cardLabel}>📦 Quantidade de painéis necessários: {x.qtdPaineis}</Text>
-                                    <Text style={styles.cardLabel}>💰 Economia estimada na conta: {x.economia}</Text>
-                                    <Text style={styles.cardLabel}>💵 Estimativa de custo do projeto: {x.custoProjeto}</Text>
-                                    {x.equipamentos && x.equipamentos.map((equipamento, index) => (
-                                    <View>
-                                        <Text> Equipamento #{index + 1}</Text>
-                                        <Text> Nome: {equipamento.nome}</Text>
-                                        <Text> Consumo: {equipamento.kilowatts_hora_mes}</Text>
-                                        <Text> Quantidade: {equipamento.qtd}</Text>
-
-                                    </View>    
-                                    ))}
-                                </Card.Content>
-
-                            </Card>
+          <ScrollView contentContainerStyle={styles.container} style={{ flex: 1 }}>
+            <View style={styles.header}>
+              <Text style={{ fontSize: 40, color: "#08364E" }}>Suas Simulações </Text>
+              <Avatar.Image size={80} style={{alignSelf: 'flex-end'}} source={require('../../assets/final.png')} />
+            </View>
+            <View style={styles.corpo}>
+                {simulations.map((data, index) => (
+                    <Card style={styles.card} key={index}>
+                    <Card.Title title="Simulação #123456789swdwdwsdsd" subtitle={data.createdAt?.toDate().toLocaleString() ?? "Data nao disponivel"} left={LeftContent} />
+                    <Card.Content>
+                    <Text style={styles.cardLabel}>Tamanho Estimado: <Text style={{ fontWeight: "bold" }}>{data.tamanhoSistema} (kWp)</Text></Text>
+                    <Text style={styles.cardLabel}>Painel(is): <Text style={{ fontWeight: "bold" }}>{data.qtdPaineis}</Text></Text>
+                    <Text style={styles.cardLabel}>Economia estimada: <Text style={{ fontWeight: "bold" }}>R$ {data.economia},00</Text></Text>
+                    <Text style={styles.cardLabel}>Custo estimado: <Text style={{ fontWeight: "bold" }}>R$ {data.custoProjeto},00</Text></Text>
+                    
+                    <Divider style={{ marginVertical: 10 }} />
+                    
+                    <Text style={styles.cardLabel}>Equipametos Extras: </Text>
+                    {data.equipamentos && data.equipamentos.length > 0 ? (
+                        <View>
+                        {data.equipamentos.map((eq, index) => (
+                            <Text>{eq.nome} x{eq.qtd}</Text>
+                            
                         ))}
+                        </View>
+                        
+                    ):
+                    <Text>Sem Equipamentos Extras</Text>
+                    }
+                    
+                    <Divider style={{ marginVertical: 10 }} />
+    
+                    <View>
+                        <Text>Status: </Text>
+                        <StatusIndicator status={data.status ?? ''} />
                     </View>
-                )}
-            </ScrollView>
+                    </Card.Content>
+                    <Card.Actions>
+                    <Button mode="contained" 
+                      style={styles.button} 
+                      onPress={() => router.replace({
+                        pathname: '/home/results',
+                        params: {
+                          simulationId: data.id,
+                        },
+                      })}>
+
+                        Detalhes
+                    </Button>
+                    </Card.Actions>
+                    </Card>
+                    
+                ))}
+  
+            </View>
+            <Button mode="contained" style={styles.button} onPress={() => router.back()}>
+              Voltar
+            </Button>
+          </ScrollView>
         </SafeAreaView>
-    );
-}
+      );
+    }
+    
 
 const styles = StyleSheet.create({
     container: {
@@ -95,16 +131,46 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#ffffff',
         paddingBottom: 20,
-    },
-    header: {
+      },
+      card: {
+        borderWidth: 1,
+        borderColor: "black",
+        borderRadius: 12,
+      },
+      cardLabel: {
+        fontSize: 17,
+        fontWeight: 'bold',
+        color: '#08364E',
+      },
+      button: {
+        backgroundColor: '#08364E',
+        marginTop: 20,
+        marginBottom: 30,
+        width: '90%', // Ajustei para 90% para ser responsivo
+        height: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 8,
+      },
+      header: {
+        display: 'flex',
         flexDirection: 'row',
         marginTop: statusBarHeight,
+        textAlign: 'center',
         alignSelf: 'flex-start',
         alignItems: "center",
         justifyContent: "space-between",
         padding: 16,
         width: '100%',
-    },
+      },
+      corpo: {
+        padding: 20,
+        gap: 30,
+        borderColor: "#08364E",
+        width: width * 0.9,
+        alignSelf: 'center',
+      },
+
     loadingContainer: {
         flex: 1,
         justifyContent: 'center',
@@ -177,10 +243,6 @@ const styles = StyleSheet.create({
         fontSize: 15,
         marginBottom: 4,
         color: '#333',
-    },
-    cardLabel: {
-        fontWeight: 'bold',
-        color: '#08364E',
     },
     equipamentosLabel: {
         fontSize: 16,

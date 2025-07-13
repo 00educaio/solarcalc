@@ -1,5 +1,5 @@
 import { SimulationResult } from "./registerSimulation";
-import { Firestore, getFirestore, collection, getDocs, query, where } from "firebase/firestore";
+import { Firestore, getFirestore, collection, getDocs, query, where, Timestamp } from "firebase/firestore";
 import { auth } from "../../../firebase.config";
 import { User } from "firebase/auth";
 import { Equipamento } from "./registerEquipamentos";
@@ -18,7 +18,11 @@ export const getAllSimulationsAndEquipments = async (): Promise<SimulationResult
   const simulations: SimulationResult[] = [];
 
   for (const docSimulacao of simulationsSnap.docs) {
+
     const simulationData = docSimulacao.data();
+    if(simulationData.createdAt && typeof simulationData.createdAt === 'string') {
+        simulationData.createdAt = Timestamp.fromDate(new Date(simulationData.createdAt));
+      }
 
     if (simulationData.user === currentUser.uid) {
       const simulationId = docSimulacao.id;

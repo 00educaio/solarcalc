@@ -4,17 +4,6 @@ import { auth } from "../../../firebase.config";
 import { User } from "firebase/auth";
 import { Equipamento, registerEquipamentos } from "./registerEquipamentos";
 
-export type SimulationResult = {
-  dadosIniciais: SimulationData;
-  tamanhoSistema?: number;
-  qtdPaineis?: number;
-  economia?: number;
-  custoProjeto?: number;
-  payback?: number;
-  equipamentos?: Equipamento[];
-  createdAt?: Timestamp;
-}
-
 export type SimulationData = {
   codigoUC: string,
   consumo: string,
@@ -23,22 +12,29 @@ export type SimulationData = {
   espacoInstalacao: string,
   areaTelhado: string,
   tipoLigacao: string,
-
 }
+
+export enum Status {
+  PENDENTE = 'Pendente',
+  ACEITO = 'Aceito',
+  RECUSADO = 'Recusado',
+  CONCLUIDO = 'Concluido' //Usado para simulacoes sem empresas
+}
+export type SimulationResult = {
+  id?: string;
+  dadosIniciais: SimulationData;
+  tamanhoSistema?: number;
+  qtdPaineis?: number;
+  economia?: number;
+  custoProjeto?: number;
+  payback?: number;
+  status: Status;
+  equipamentos?: Equipamento[];
+  createdAt?: Timestamp;
+}
+
 export const simulationManager = async (dadosSimulacao: SimulationData, equipamentos: Equipamento[]) => {
 
-    // console.log('codigoUC', codigoUC);
-    // console.log('consumo', consumo);
-    // console.log('localizacao', localizacao);
-    // console.log('tipoImovel', tipoImovel);
-    // console.log('espacoInstalacao', espacoInstalacao);
-    // console.log('areaTelhado', areaTelhado);
-    // console.log('tipoLigacao', tipoLigacao);
-    // console.log('equipamentos', equipamentos.length);
-    
-    // equipamentos.forEach(equipamento => {
-    //   console.log('equipamento', equipamento);
-    // })
     try {
       const resultado: SimulationResult = calculoMock(dadosSimulacao);
       const docId = await saveSimulation(resultado, equipamentos);
@@ -69,7 +65,8 @@ const calculoMock = (dados: SimulationData) : SimulationResult => {
       economia: numberRamdom(10000),
       custoProjeto: numberRamdom(100),
       payback: numberRamdom(100),
-      
+      status: Status.CONCLUIDO,
+      createdAt: Timestamp.fromDate(new Date()),      
     };
     return simulationResult;
 }
@@ -83,9 +80,11 @@ const saveSimulation = async (data: SimulationResult, equipamentos: Equipamento[
   const docRef = await addDoc(collection(db, "simulations"), {
     user: user.uid,
     ...data,
-    createdAt: new Date(),
+    
+    
   });
   const docId = docRef.id;
+  
   if (equipamentos.length > 0) {
     await registerEquipamentos(equipamentos, docId);
     
