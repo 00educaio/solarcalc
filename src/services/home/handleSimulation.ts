@@ -27,7 +27,7 @@ export type SimulationResult = {
   // qtdPaineis?: number;
   economiaMes?: number;
   economiaAno?: number;
-  custoProjeto?: number;
+  // custoProjeto?: number;
   payback?: string;
   status: Status;
   equipamentos?: Equipamento[];
@@ -65,7 +65,6 @@ const calcSimulation = (dados: SimulationData) : SimulationResult => {
       tamanhoSistema: systemSize,
       economiaMes: economyMonth,
       economiaAno: economyAnual,
-      // custoProjeto: numberRamdom(100),
       payback: retorno,
       status: Status.CONCLUIDO,
       createdAt: Timestamp.fromDate(new Date()),      

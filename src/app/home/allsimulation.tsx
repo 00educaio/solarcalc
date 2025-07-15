@@ -5,7 +5,6 @@ import { SimulationResult } from '../../services/home/handleSimulation'; // Ajus
 import { getAllSimulationsAndEquipments } from '@/src/services/home/getAllSimulation';
 import StatusIndicator from '@/src/components/StatusIndicator';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { navegateWithSimulation, SimulationWithEquipamentos } from '@/src/services/home/navegateWithSimulation';
 import { router } from 'expo-router';
 import { DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
 
@@ -73,9 +72,8 @@ export default function SimulationResultsScreen() {
                         <Card.Title title="Simulação #123456789swdwdwsdsd" subtitle={item.createdAt?.toDate().toLocaleString() ?? "Data nao disponivel"} left={LeftContent} />
                         <Card.Content>
                         <Text style={styles.cardLabel}>Tamanho Estimado: <Text style={{ fontWeight: "bold" }}>{item.tamanhoSistema} (kWp)</Text></Text>
-                        <Text style={styles.cardLabel}>Painel(is): <Text style={{ fontWeight: "bold" }}>{item.qtdPaineis}</Text></Text>
-                        <Text style={styles.cardLabel}>Economia estimada: <Text style={{ fontWeight: "bold" }}>R$ {item.economia},00</Text></Text>
-                        <Text style={styles.cardLabel}>Custo estimado: <Text style={{ fontWeight: "bold" }}>R$ {item.custoProjeto},00</Text></Text>
+                        <Text style={styles.cardLabel}>Economia Mensal Estimada: <Text style={{ fontWeight: "bold" }}>R$ {item.economiaMes},00</Text></Text>
+                        <Text style={styles.cardLabel}>Economia Anual Estimada: <Text style={{ fontWeight: "bold" }}>R$ {item.economiaAno},00</Text></Text>
                         
                         <Divider style={{ marginVertical: 10 }} />
                         

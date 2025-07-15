@@ -2,7 +2,6 @@ import { View, Text, StyleSheet, ScrollView, SafeAreaView, StatusBar, Dimensions
 import { Avatar, Button } from 'react-native-paper';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { navegateWithSimulation, SimulationWithEquipamentos } from '@/src/services/home/navegateWithSimulation';
 import { useSimulation } from '@/src/hooks/useSimulation';
 
 const statusBarHeight: number = (StatusBar.currentHeight ?? 30);
@@ -47,31 +46,31 @@ export default function ResultsScreen() {
           
           </View>
           <View style={styles.card}>
-            <Text style={styles.top}>Payback</Text>
+            <Text style={styles.top}>Economia Estimada Mensal</Text>
             
             <View style={styles.bottom}>
 
               <FontAwesome5 name="solar-panel" size={30} color="#08364E"/>
-              <Text style={styles.texto}>{simulacao?.payback}</Text>
+              <Text style={styles.texto}>{simulacao?.economiaMes}</Text>
 
             </View>
           
           </View>
           <View style={styles.card}>
-            <Text style={styles.top}>Economia Estimada</Text>
+            <Text style={styles.top}>Economia Estimada Anual</Text>
             
             <View style={styles.bottom}>
 
               <FontAwesome5 name="chart-line" size={30} color="#08364E"/>
-              <Text style={styles.texto}>R$ {simulacao?.economia},00</Text>
+              <Text style={styles.texto}>R$ {simulacao?.economiaAno},00</Text>
 
             </View>
           </View>
           <View style={styles.banner}>
               <FontAwesome5 name="dollar-sign" size={45} color="#E3B402"/>
               <View style={styles.bannerContent}>
-                <Text style={styles.bannerText}>Estimativa de custo do Projeto</Text>
-                <Text style={styles.bannerText}>R$ {simulacao?.custoProjeto},00</Text>
+                <Text style={styles.bannerText}>Payback</Text>
+                <Text style={styles.bannerText}>{simulacao?.payback}</Text>
               </View>
 
           </View>
