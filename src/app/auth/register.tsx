@@ -8,6 +8,7 @@ import { auth } from '../../../firebase.config';
 import handleRegister from '../../services/auth/handleRegister';
 import { formatPhoneNumber, getCleanPhoneNumber } from '../../services/auth/handlePhone'; // Importe as funções de serviço
 import SelectEstado from '../../components/SelectEstado';
+import { LoadingButton } from '@/src/components/LoadingButton';
 
 const screenWidth = Dimensions.get('window').width;
 const aspectRatio = 500 / 250;
@@ -26,13 +27,13 @@ export default function RegisterScreen() {
     const formattedText = formatPhoneNumber(text);
     setPhone(formattedText); // Atualiza o estado com o valor mascarado
   };
-  const handleSubmitRegister = () => {
+  const handleSubmitRegister = async () => {
     if (password !== confirmPassword) {
       Alert.alert('Erro', 'As senhas devem ser iguais.');
       return;
     }
     const unmaskedPhone = getCleanPhoneNumber(phone); // Telefone sem máscara para envio
-    handleRegister(auth, name, email, password, unmaskedPhone, estado); // Certifique-se de passar unmaskedPhone se seu handleRegister precisar
+    await handleRegister(auth, name, email, password, unmaskedPhone, estado); // Certifique-se de passar unmaskedPhone se seu handleRegister precisar
   };
 
   return (
@@ -111,9 +112,9 @@ export default function RegisterScreen() {
                 autoCapitalize='none'
               />
 
-              <Button mode="contained" style={styles.button} onPress={handleSubmitRegister}>
-                Cadastrar
-              </Button>
+
+              <LoadingButton onPressFunction={handleSubmitRegister} texto="Cadastrar" />
+
 
               <View style={{ marginTop: 20 }}>
                 <Link href={"/auth/" as any} asChild>

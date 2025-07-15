@@ -3,14 +3,21 @@ import { Text, Button, Surface, ActivityIndicator, Avatar, Card, Divider } from 
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import StatusIndicator from '@/src/components/StatusIndicator';
 import { useSimulation } from '@/src/hooks/useSimulation';
+import { deleteSimulation } from '@/src/services/home/deleteSimulation';
+import { LoadingButton } from '@/src/components/LoadingButton';
 
 const statusBarHeight: number = (StatusBar.currentHeight ?? 30);
 const { width } = Dimensions.get('window');
 
-export default function ProposalStatusScreen() {
+export default function showSimulation() {
   const router = useRouter();
   const { simulationId } = useLocalSearchParams<{ simulationId: string }>();
   const { simulacao, loading, error } = useSimulation(simulationId);
+
+  const handleDeleteSimulation = async () => {
+    await deleteSimulation(simulationId);
+    router.back();
+  };
 
   if (loading) {
     return <Text>Carregando...</Text>;
@@ -76,8 +83,8 @@ export default function ProposalStatusScreen() {
               </View>
             </Card.Content>
             <Card.Actions>
-              <Button>Excluir</Button>
-              <Button onPress={() => router.replace('/home')}>Home</Button>
+              <LoadingButton onPressFunction={handleDeleteSimulation} texto="Excluir" />
+              <LoadingButton onPressFunction={() => router.replace('/home')} texto="Home" />
             </Card.Actions>
           </Card>
 

@@ -6,6 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Link, router } from 'expo-router';
 import { auth } from '../../../firebase.config'; 
 import handleLogin from '../../services/auth/handleLogin';
+import { LoadingButton } from '@/src/components/LoadingButton';
 
 const screenWidth = Dimensions.get('window').width;
 const aspectRatio = 500 / 250;
@@ -66,9 +67,9 @@ export default function LoginScreen() {
             </Link>
           </View>
 
-          <Button mode="contained" style={styles.button} onPress={ () => handleLogin(auth, email, password)}>
-            Entrar
-          </Button>
+          <LoadingButton onPressFunction={() => handleLogin(auth, email, password)} texto="Entrar" />
+
+
 {/* 
           <View>
             <Text style={{ fontSize: 20, color: "#08364E", marginTop: 10, marginBottom: 10 }}>

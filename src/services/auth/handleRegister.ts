@@ -3,7 +3,7 @@ import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { useRouter } from 'expo-router';
 
 const db = getFirestore();
-const handleRegister = (auth: Auth, name: string, email: string, senha: string, phone: string, estado: string) : void => {
+const handleRegister = async (auth: Auth, name: string, email: string, senha: string, phone: string, estado: string) : Promise<void> => {
     console.log("Registrando", email, senha);
 
       createUserWithEmailAndPassword(auth, email, senha)

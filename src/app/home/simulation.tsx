@@ -8,6 +8,7 @@ import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import { simulationManager, SimulationData } from '../../services/home/handleSimulation';
 import { Equipamento } from '@/src/services/home/registerEquipamentos';
 import ModalEquipamento from '@/src/components/ModalEquipamento';
+import { LoadingButton } from '@/src/components/LoadingButton';
 
 const statusBarHeight: number = (StatusBar.currentHeight ?? 30);
 const { width } = Dimensions.get('window');
@@ -47,7 +48,7 @@ export default function SimulacaoScreen() {
     }, []);
     
 
-    const simularSistema = () => {
+    const simularSistema = async () => {
       const simulationData: SimulationData = {
         codigoUC: codigoUC,
         consumo: consumo,
@@ -58,7 +59,7 @@ export default function SimulacaoScreen() {
         tipoLigacao: tipoLigacao,
       
       }
-      simulationManager(simulationData, equipamentos);      
+      await simulationManager(simulationData, equipamentos);      
     };
     
     const addEquipamento = () => {
@@ -80,7 +81,7 @@ export default function SimulacaoScreen() {
     };
 
     return (
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1, marginBottom: 46, }}>
         <KeyboardAvoidingView behavior='padding' style={{flex: 1}}>
           <Provider>
             <ScrollView contentContainerStyle={styles.container} style={{ flex: 1 }}>
@@ -179,9 +180,9 @@ export default function SimulacaoScreen() {
                 )}
 
               </View>
-              <Button mode="contained" onPress={simularSistema} style={styles.button}>
-                Simular Sistema Ideal
-              </Button>
+
+              <LoadingButton onPressFunction={simularSistema} texto="Cadastrar" />
+              
             </ScrollView>
           </Provider>
         </KeyboardAvoidingView>
@@ -196,6 +197,7 @@ export default function SimulacaoScreen() {
       alignItems: 'center',
       backgroundColor: '#ffffff',
       paddingBottom: 20,
+
     },
     // Estilo para TextInputs dentro do card principal
     input: {

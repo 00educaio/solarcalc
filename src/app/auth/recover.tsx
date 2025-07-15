@@ -6,6 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Link } from 'expo-router';
 import { auth } from '../../../firebase.config';
 import handleForgotPassword from '../../services/auth/handleForgotPassword';
+import { LoadingButton } from '@/src/components/LoadingButton';
 
 const screenWidth = Dimensions.get('window').width;
 const aspectRatio = 500 / 250;
@@ -49,12 +50,11 @@ export default function ForgotPasswordScreen() {
             style={styles.input}
           />
 
-          <Button mode="contained" style={styles.button} onPress={() => handleForgotPassword(auth, email)}>
-            Enviar Link
-          </Button>
+          <LoadingButton onPressFunction={() => handleForgotPassword(auth, email)} texto="Enviar Link" />
+          
 
           <View style={{ marginTop: 20 }}>
-            <Link href={"/auth/login" as any} asChild>
+            <Link href={"/auth/" as any} asChild>
                 <Pressable>
                     <Text style={{ fontSize: 16, color: "#08364E" }}>
                         Retornar para o Login.

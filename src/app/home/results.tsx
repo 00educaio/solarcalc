@@ -3,6 +3,7 @@ import { Avatar, Button } from 'react-native-paper';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useSimulation } from '@/src/hooks/useSimulation';
+import { LoadingButton } from '@/src/components/LoadingButton';
 
 const statusBarHeight: number = (StatusBar.currentHeight ?? 30);
 const { width } = Dimensions.get('window');
@@ -75,14 +76,13 @@ export default function ResultsScreen() {
 
           </View>
         </View>
-        <Button mode="contained" style={styles.button} onPress={() => router.replace({
-                                                                        pathname: '/home/showSimulation',
-                                                                        params: {
-                                                                          simulationId: simulationId,
-                                                                        },
-                                                                      })}>
-          Ver Simulação
-        </Button>
+        <LoadingButton onPressFunction={() => router.replace({
+                                                pathname: '/home/showSimulation',
+                                                params: {
+                                                  simulationId: simulationId,
+                                                },
+                                              })} texto="Ver Simulação" />
+        
       </ScrollView>
     </SafeAreaView>
   );

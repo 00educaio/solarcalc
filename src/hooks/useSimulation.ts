@@ -50,7 +50,7 @@ export function useSimulation(simulationId?: string) {
           equipamentos.push(doc.data() as Equipamento);
         });
 
-        setSimulacao({ ...data, equipamentos });
+        setSimulacao({ id: docSnap.id, ...data, equipamentos });
       } catch (err: any) {
         console.error(err);
         setError(err.message || "Erro desconhecido");
