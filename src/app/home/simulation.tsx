@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useEffect } from 'react';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
-import { simulationManager, SimulationData } from '../../services/home/registerSimulation';
+import { simulationManager, SimulationData } from '../../services/home/handleSimulation';
 import { Equipamento } from '@/src/services/home/registerEquipamentos';
 import ModalEquipamento from '@/src/components/ModalEquipamento';
 

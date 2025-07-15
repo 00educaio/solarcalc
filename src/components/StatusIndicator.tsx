@@ -4,9 +4,7 @@ import { RadioButton } from 'react-native-paper';
 type StatusIndicatorProps = {
     status: string
 }
-export default function StatusIndicator ( { status }: StatusIndicatorProps ) {
-    console.log(status.toLowerCase());
-    
+export default function StatusIndicator ( { status }: StatusIndicatorProps ) {    
   if (status == '') return null; // ou um fallback visual
 
   let color: string = ""

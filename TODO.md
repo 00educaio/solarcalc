@@ -1,5 +1,5 @@
 ### Funcionalidades
-1. Lógica do cálculo
+1. Colocar aviso de simulação estimada
 2. Haverá um showSimulation, onde o user será redirecionado após realizar a proposta pelo id(será realizado um get pro firestore), onde também será possível fazer {Delete} de simulações que foram aceitas e recusadas
 ### Polimento
 1. Tratar erros e execeções na Autentificação(senha curta, email inválido, etc)

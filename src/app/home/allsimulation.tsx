@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, View, StyleSheet, StatusBar, Dimensions, ActivityIndicator, SafeAreaView } from 'react-native';
+import { ScrollView, View, StyleSheet, StatusBar, Dimensions, ActivityIndicator, SafeAreaView, FlatList } from 'react-native';
 import { Text, Avatar, Card, Divider, Button } from 'react-native-paper';
-import { SimulationResult } from '../../services/home/registerSimulation'; // Ajuste o caminho conforme necessário
+import { SimulationResult } from '../../services/home/handleSimulation'; // Ajuste o caminho conforme necessário
 import { getAllSimulationsAndEquipments } from '@/src/services/home/getAllSimulation';
 import StatusIndicator from '@/src/components/StatusIndicator';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { navegateWithSimulation, SimulationWithEquipamentos } from '@/src/services/home/navegateWithSimulation';
 import { router } from 'expo-router';
+import { DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
 
 const LeftContent = (props: any) => (
   <Avatar.Icon
@@ -22,32 +23,30 @@ const { height, width } = Dimensions.get('window');
 
 export default function SimulationResultsScreen() {
     const [simulations, setSimulations] = useState<SimulationResult[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const [lastDoc, setLastDoc] = useState<QueryDocumentSnapshot<DocumentData>| null>(null)
+    const [hasMore, setHasMore] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    const fetchSimulations = async () => {
+        if (isLoading || !hasMore) return;
+        setIsLoading(true);
+
+        try {
+            const pageSize = 5; // Defina o tamanho da página conforme necessário
+            const { simulations, lastVisibleDoc } = await getAllSimulationsAndEquipments(pageSize, lastDoc);
+            setSimulations((prevSimulations) => [...prevSimulations, ...simulations]);
+            setLastDoc(lastVisibleDoc);
+            setHasMore(simulations.length === pageSize);
+        } catch (error) {
+            setError("Erro ao carregar as simulações.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
     useEffect(() => {
-        const fetchSimulations = async () => {
-            try {
-                const results = await getAllSimulationsAndEquipments();
-                setSimulations(results);
-            } catch (err) {
-                setError("Não foi possível carregar as simulações. Tente novamente mais tarde.");
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
         fetchSimulations();
-    }, []);
-
-    if (isLoading) {
-        return (
-            <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="#08364E" />
-                <Text style={styles.loadingText}>Carregando simulações...</Text>
-            </View>
-        );
-    }
+    })
 
     if (error) {
         return (
@@ -65,56 +64,63 @@ export default function SimulationResultsScreen() {
               <Text style={{ fontSize: 40, color: "#08364E" }}>Suas Simulações </Text>
               <Avatar.Image size={80} style={{alignSelf: 'flex-end'}} source={require('../../assets/final.png')} />
             </View>
-            <View style={styles.corpo}>
-                {simulations.map((data, index) => (
-                    <Card style={styles.card} key={index}>
-                    <Card.Title title="Simulação #123456789swdwdwsdsd" subtitle={data.createdAt?.toDate().toLocaleString() ?? "Data nao disponivel"} left={LeftContent} />
-                    <Card.Content>
-                    <Text style={styles.cardLabel}>Tamanho Estimado: <Text style={{ fontWeight: "bold" }}>{data.tamanhoSistema} (kWp)</Text></Text>
-                    <Text style={styles.cardLabel}>Painel(is): <Text style={{ fontWeight: "bold" }}>{data.qtdPaineis}</Text></Text>
-                    <Text style={styles.cardLabel}>Economia estimada: <Text style={{ fontWeight: "bold" }}>R$ {data.economia},00</Text></Text>
-                    <Text style={styles.cardLabel}>Custo estimado: <Text style={{ fontWeight: "bold" }}>R$ {data.custoProjeto},00</Text></Text>
-                    
-                    <Divider style={{ marginVertical: 10 }} />
-                    
-                    <Text style={styles.cardLabel}>Equipametos Extras: </Text>
-                    {data.equipamentos && data.equipamentos.length > 0 ? (
-                        <View>
-                        {data.equipamentos.map((eq, index) => (
-                            <Text>{eq.nome} x{eq.qtd}</Text>
-                            
-                        ))}
-                        </View>
+                <FlatList
+                    style={styles.corpo}
+                    data={simulations}
+                    keyExtractor={(item) => item.id as string}
+                    renderItem={({ item }) => (
+                        <Card style={styles.card}>
+                        <Card.Title title="Simulação #123456789swdwdwsdsd" subtitle={item.createdAt?.toDate().toLocaleString() ?? "Data nao disponivel"} left={LeftContent} />
+                        <Card.Content>
+                        <Text style={styles.cardLabel}>Tamanho Estimado: <Text style={{ fontWeight: "bold" }}>{item.tamanhoSistema} (kWp)</Text></Text>
+                        <Text style={styles.cardLabel}>Painel(is): <Text style={{ fontWeight: "bold" }}>{item.qtdPaineis}</Text></Text>
+                        <Text style={styles.cardLabel}>Economia estimada: <Text style={{ fontWeight: "bold" }}>R$ {item.economia},00</Text></Text>
+                        <Text style={styles.cardLabel}>Custo estimado: <Text style={{ fontWeight: "bold" }}>R$ {item.custoProjeto},00</Text></Text>
                         
-                    ):
-                    <Text>Sem Equipamentos Extras</Text>
-                    }
-                    
-                    <Divider style={{ marginVertical: 10 }} />
-    
-                    <View>
-                        <Text>Status: </Text>
-                        <StatusIndicator status={data.status ?? ''} />
-                    </View>
-                    </Card.Content>
-                    <Card.Actions>
-                    <Button mode="contained" 
-                      style={styles.button} 
-                      onPress={() => router.replace({
-                        pathname: '/home/results',
-                        params: {
-                          simulationId: data.id,
-                        },
-                      })}>
+                        <Divider style={{ marginVertical: 10 }} />
+                        
+                        <Text style={styles.cardLabel}>Equipametos Extras: </Text>
+                        {item.equipamentos && item.equipamentos.length > 0 ? (
+                            <View>
+                            {item.equipamentos.map((eq, index) => (
+                                <Text key={index}>{eq.nome} x{eq.qtd}</Text>
+                            ))}
+                            </View>
+                            
+                        ):
+                        <Text>Sem Equipamentos Extras</Text>
+                        }
+                        
+                        <Divider style={{ marginVertical: 10 }} />
+        
+                        <View>
+                            <Text>Status: </Text>
+                            <StatusIndicator status={item.status ?? ''} />
+                        </View>
+                        </Card.Content>
+                        <Card.Actions>
+                        <Button mode="contained" 
+                        style={styles.button} 
+                        onPress={() => router.replace({
+                            pathname: '/home/results',
+                            params: {
+                            simulationId: item.id,
+                            },
+                        })}>
 
-                        Detalhes
-                    </Button>
-                    </Card.Actions>
-                    </Card>
+                            Detalhes
+                        </Button>
+                        </Card.Actions>
+                        </Card>
+                        
+                    )}
+                    onEndReached={fetchSimulations}
+                    onEndReachedThreshold={0.7}
+                    ListFooterComponent={isLoading ? <ActivityIndicator size="large" color="#08364E" /> : null}
+                />
+
                     
-                ))}
   
-            </View>
             <Button mode="contained" style={styles.button} onPress={() => router.back()}>
               Voltar
             </Button>
@@ -133,6 +139,7 @@ const styles = StyleSheet.create({
         paddingBottom: 20,
       },
       card: {
+        marginBottom: 30,
         borderWidth: 1,
         borderColor: "black",
         borderRadius: 12,

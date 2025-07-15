@@ -10,7 +10,7 @@ import {
   getDocs,
 } from "firebase/firestore";
 import { Equipamento } from "../services/home/registerEquipamentos";
-import { SimulationResult } from "../services/home/registerSimulation";
+import { SimulationResult } from "../services/home/handleSimulation";
 
 export type SimulationWithEquipamentos = SimulationResult & {
   equipamentos?: Equipamento[];

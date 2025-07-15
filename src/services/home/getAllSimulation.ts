@@ -1,10 +1,18 @@
-import { SimulationResult } from "./registerSimulation";
-import { Firestore, getFirestore, collection, getDocs, query, where, Timestamp } from "firebase/firestore";
+import { SimulationResult } from "./handleSimulation";
+import { Firestore, getFirestore, collection, getDocs, query, where, Timestamp, QueryDocumentSnapshot, DocumentData, orderBy, startAfter, limit } from "firebase/firestore";
 import { auth } from "../../../firebase.config";
 import { User } from "firebase/auth";
 import { Equipamento } from "./registerEquipamentos";
 
-export const getAllSimulationsAndEquipments = async (): Promise<SimulationResult[]> => {
+export const getAllSimulationsAndEquipments = async (
+                                                pageSize: number,
+                                                lastDoc: QueryDocumentSnapshot<DocumentData> | null
+                                              ): 
+                                              Promise<{
+                                                simulations: SimulationResult[],
+                                                lastVisibleDoc: QueryDocumentSnapshot<DocumentData> | null
+                                              }> => {
+
   const db: Firestore = getFirestore();
   const currentUser: User | null = auth.currentUser;
 
@@ -13,7 +21,17 @@ export const getAllSimulationsAndEquipments = async (): Promise<SimulationResult
   }
 
   const simulationsRef = collection(db, "simulations");
-  const simulationsSnap = await getDocs(simulationsRef);
+
+  const simualtionsQuery = query (
+    simulationsRef,
+    orderBy("createdAt", "desc"),
+    ...(lastDoc ? [startAfter(lastDoc)] : []),
+    limit(pageSize)
+  )
+
+  const simulationsSnap = await getDocs(simualtionsQuery);
+
+  const lastVisibleDoc = simulationsSnap.docs[simulationsSnap.docs.length -1] ?? null
 
   const simulations: SimulationResult[] = [];
 
@@ -43,5 +61,5 @@ export const getAllSimulationsAndEquipments = async (): Promise<SimulationResult
     }
   }
 
-  return simulations;
+  return {simulations, lastVisibleDoc};
 };

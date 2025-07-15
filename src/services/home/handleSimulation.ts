@@ -24,10 +24,11 @@ export type SimulationResult = {
   id?: string;
   dadosIniciais: SimulationData;
   tamanhoSistema?: number;
-  qtdPaineis?: number;
-  economia?: number;
+  // qtdPaineis?: number;
+  economiaMes?: number;
+  economiaAno?: number;
   custoProjeto?: number;
-  payback?: number;
+  payback?: string;
   status: Status;
   equipamentos?: Equipamento[];
   createdAt?: Timestamp;
@@ -36,7 +37,7 @@ export type SimulationResult = {
 export const simulationManager = async (dadosSimulacao: SimulationData, equipamentos: Equipamento[]) => {
 
     try {
-      const resultado: SimulationResult = calculoMock(dadosSimulacao);
+      const resultado: SimulationResult = calcSimulation(dadosSimulacao);
       const docId = await saveSimulation(resultado, equipamentos);
       router.replace({
           pathname: '/home/results',
@@ -53,18 +54,19 @@ export const simulationManager = async (dadosSimulacao: SimulationData, equipame
 }
 
 //Brincando
-const calculoMock = (dados: SimulationData) : SimulationResult => {
-    const numberRamdom = (final: number) : number => {
-        return Math.floor(Math.random() * final)
-    };
+const calcSimulation = (dados: SimulationData) : SimulationResult => {
+    const systemSize = parseInt(dados.consumo) / 5 * 30 * 0.8;
+    const retorno = "3 anos";
+    const economyMonth = systemSize * 102;
+    const economyAnual = economyMonth * 12
 
     const simulationResult: SimulationResult = {
       dadosIniciais: dados,
-      tamanhoSistema: numberRamdom(1000),
-      qtdPaineis: numberRamdom(100),
-      economia: numberRamdom(10000),
-      custoProjeto: numberRamdom(100),
-      payback: numberRamdom(100),
+      tamanhoSistema: systemSize,
+      economiaMes: economyMonth,
+      economiaAno: economyAnual,
+      // custoProjeto: numberRamdom(100),
+      payback: retorno,
       status: Status.CONCLUIDO,
       createdAt: Timestamp.fromDate(new Date()),      
     };
