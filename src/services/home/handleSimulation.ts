@@ -3,6 +3,7 @@ import { addDoc, collection, Firestore, getFirestore, Timestamp } from "firebase
 import { auth } from "../../../firebase.config";
 import { User } from "firebase/auth";
 import { Equipamento, registerEquipamentos } from "./registerEquipamentos";
+import { Alert } from "react-native";
 
 export type SimulationData = {
   codigoUC: string,
@@ -35,7 +36,12 @@ export type SimulationResult = {
 }
 
 export const simulationManager = async (dadosSimulacao: SimulationData, equipamentos: Equipamento[]) => {
-
+    
+  const isEmpty = Object.values(dadosSimulacao).some(value => value === '');
+  if (isEmpty) {
+    Alert.alert("Preencha todos os campos");
+    return;
+  }
     try {
       const resultado: SimulationResult = calcSimulation(dadosSimulacao);
       const docId = await saveSimulation(resultado, equipamentos);

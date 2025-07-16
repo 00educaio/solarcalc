@@ -37,11 +37,11 @@ export default function HomeScreen() {
         </Button>
       </Link>
 
-      <View>
+      {/* <View>
         <Button mode="contained" style={styles.button} onPress={handleSeed}>
           Seeder
         </Button>
-      </View>
+      </View> */}
 
       <Button
         mode="outlined"

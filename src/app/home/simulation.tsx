@@ -30,7 +30,7 @@ export default function SimulacaoScreen() {
     
 
     useEffect(() => {
-      const fetchEquipamentos = async () => {
+      const fetchEquipamentosPadrao = async () => {
         try {
           const db = getFirestore();
           const snapshot = await getDocs(collection(db, "equipamentos_padrao"));
@@ -43,7 +43,7 @@ export default function SimulacaoScreen() {
         }
       };
       
-      fetchEquipamentos();
+      fetchEquipamentosPadrao();
     
     }, []);
     
@@ -90,7 +90,7 @@ export default function SimulacaoScreen() {
                 <Avatar.Image size={80} style={{alignSelf: 'flex-end'}} source={require('../../assets/final.png')} />
               </View>
               <View style={styles.card}>
-                <TextInput label="Código da Unidade Consumidora" value={codigoUC} onChangeText={setCodigoUC} style={styles.input} />
+                <TextInput label="Código da Unidade Consumidora" value={codigoUC} onChangeText={setCodigoUC} keyboardType="numeric" style={styles.input} />
                 <TextInput label="Maior consumo mensal (kWh/mês)" value={consumo} onChangeText={setConsumo} keyboardType="numeric" style={styles.input} />
                 <TextInput label="Localização completa" value={localizacao} onChangeText={setLocalizacao} style={styles.input} />
                 

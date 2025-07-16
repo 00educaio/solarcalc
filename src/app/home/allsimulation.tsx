@@ -57,8 +57,7 @@ export default function SimulationResultsScreen() {
     }
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
-          <ScrollView contentContainerStyle={styles.container} style={{ flex: 1 }}>
+        <SafeAreaView style={styles.container}>
             <View style={styles.header}>
               <Text style={{ fontSize: 40, color: "#08364E" }}>Suas Simulações </Text>
               <Avatar.Image size={80} style={{alignSelf: 'flex-end'}} source={require('../../assets/final.png')} />
@@ -69,7 +68,7 @@ export default function SimulationResultsScreen() {
                     keyExtractor={(item) => item.id as string}
                     renderItem={({ item }) => (
                         <Card style={styles.card}>
-                        <Card.Title title="Simulação #123456789swdwdwsdsd" subtitle={item.createdAt?.toDate().toLocaleString() ?? "Data nao disponivel"} left={LeftContent} />
+                        <Card.Title title={item.id} subtitle={item.createdAt?.toDate().toLocaleString() ?? "Data nao disponivel"} left={LeftContent} />
                         <Card.Content>
                         <Text style={styles.cardLabel}>Tamanho Estimado: <Text style={{ fontWeight: "bold" }}>{item.tamanhoSistema} (kWp)</Text></Text>
                         <Text style={styles.cardLabel}>Economia Mensal Estimada: <Text style={{ fontWeight: "bold" }}>R$ {item.economiaMes},00</Text></Text>
@@ -100,7 +99,7 @@ export default function SimulationResultsScreen() {
                         <Button mode="contained" 
                         style={styles.button} 
                         onPress={() => router.replace({
-                            pathname: '/home/results',
+                            pathname: '/home/showSimulation',
                             params: {
                             simulationId: item.id,
                             },
@@ -119,10 +118,9 @@ export default function SimulationResultsScreen() {
 
                     
   
-            <Button mode="contained" style={styles.button} onPress={() => router.back()}>
+            <Button mode="contained" style={styles.buttonV} onPress={() => router.back()}>
               Voltar
             </Button>
-          </ScrollView>
         </SafeAreaView>
       );
     }
@@ -148,6 +146,16 @@ const styles = StyleSheet.create({
         color: '#08364E',
       },
       button: {
+        backgroundColor: '#08364E',
+        marginTop: 20,
+        marginBottom: 30,
+        width: '100%', // Ajustei para 90% para ser responsivo
+        height: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 8,
+      },
+      buttonV: {
         backgroundColor: '#08364E',
         marginTop: 20,
         marginBottom: 30,

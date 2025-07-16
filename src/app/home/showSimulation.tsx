@@ -82,14 +82,14 @@ export default function showSimulation() {
                 <StatusIndicator status={simulacao?.status ?? ""} />
               </View>
             </Card.Content>
-            <Card.Actions>
+            <Card.Actions style={{ flexDirection: "column" }}>
               <LoadingButton onPressFunction={handleDeleteSimulation} texto="Excluir" />
               <LoadingButton onPressFunction={() => router.replace('/home')} texto="Home" />
             </Card.Actions>
           </Card>
 
         </View>
-        <Button mode="contained" style={styles.button}>
+        <Button mode="contained" style={styles.button} onPress={() => router.replace('/home')}>
           Voltar
         </Button>
       </ScrollView>

@@ -55,6 +55,7 @@ export const getAllSimulationsAndEquipments = async (
       });
 
       simulations.push({
+        id: docSimulacao.id,
         ...simulationData,
         equipamentos,
       } as SimulationResult);

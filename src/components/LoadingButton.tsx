@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { ActivityIndicator, Button } from 'react-native-paper';
-
+import { Button } from 'react-native-paper';
 
 type Props = {
     onPressFunction: () => void,
