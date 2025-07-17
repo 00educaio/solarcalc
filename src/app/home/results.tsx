@@ -63,7 +63,7 @@ export default function ResultsScreen() {
             <View style={styles.bottom}>
 
               <FontAwesome5 name="chart-line" size={30} color="#08364E"/>
-              <Text style={styles.texto}>R$ {simulacao?.economiaAno},00</Text>
+              <Text style={styles.texto}>{simulacao?.economiaAno}</Text>
 
             </View>
           </View>

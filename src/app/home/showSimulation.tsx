@@ -57,8 +57,8 @@ export default function showSimulation() {
               <Divider style={{ marginVertical: 10 }} />
 
               <Text style={styles.cardLabel}>Tamanho Estimado: <Text style={{ fontWeight: "bold" }}>{simulacao?.tamanhoSistema}(kWp)</Text></Text>
-              <Text style={styles.cardLabel}>Economia Mensal Estimada: <Text style={{ fontWeight: "bold" }}>R$ {simulacao?.economiaMes},00</Text></Text>
-              <Text style={styles.cardLabel}>Economia Anual Estimada: <Text style={{ fontWeight: "bold" }}>R$ {simulacao?.economiaAno},00</Text></Text>
+              <Text style={styles.cardLabel}>Economia Mensal Estimada: <Text style={{ fontWeight: "bold" }}>{simulacao?.economiaMes}</Text></Text>
+              <Text style={styles.cardLabel}>Economia Anual Estimada: <Text style={{ fontWeight: "bold" }}>{simulacao?.economiaAno}</Text></Text>
               <Divider style={{ marginVertical: 10 }} />
               
               {simulacao?.equipamentos && simulacao.equipamentos.length > 0 && (

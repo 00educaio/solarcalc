@@ -26,8 +26,8 @@ export type SimulationResult = {
   dadosIniciais: SimulationData;
   tamanhoSistema?: number;
   // qtdPaineis?: number;
-  economiaMes?: number;
-  economiaAno?: number;
+  economiaMes?: string;
+  economiaAno?: string;
   // custoProjeto?: number;
   payback?: string;
   status: Status;
@@ -43,7 +43,7 @@ export const simulationManager = async (dadosSimulacao: SimulationData, equipame
     return;
   }
     try {
-      const resultado: SimulationResult = calcSimulation(dadosSimulacao);
+      const resultado: SimulationResult = calcSimulation(dadosSimulacao, equipamentos);
       const docId = await saveSimulation(resultado, equipamentos);
       router.replace({
           pathname: '/home/results',
@@ -54,23 +54,27 @@ export const simulationManager = async (dadosSimulacao: SimulationData, equipame
       );
     } catch (error) {
       console.error("Erro na simulação:", error);
-      alert("Erro ao realizar a simulação");
+      Alert.alert("Erro ao realizar a simulação");
 
     }
 }
 
 //Brincando
-const calcSimulation = (dados: SimulationData) : SimulationResult => {
-    const systemSize = parseInt(dados.consumo) / 5 * 30 * 0.8;
+const calcSimulation = (dados: SimulationData, equipamentos: Equipamento[]) : SimulationResult => {
+    const consumoEquipamentos = equipamentos.reduce((total, equipamento) => total + parseInt(equipamento.kilowatts_hora_mes), 0);
+    const consumoTotal = parseInt(dados.consumo) + consumoEquipamentos;
+    const systemSize = consumoTotal / 120;
     const retorno = "3 anos";
     const economyMonth = systemSize * 102;
     const economyAnual = economyMonth * 12
+    const economyMonthFormatted = economyMonth.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    const economyAnualFormatted = economyAnual.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
     const simulationResult: SimulationResult = {
       dadosIniciais: dados,
       tamanhoSistema: systemSize,
-      economiaMes: economyMonth,
-      economiaAno: economyAnual,
+      economiaMes: economyMonthFormatted,
+      economiaAno: economyAnualFormatted,
       payback: retorno,
       status: Status.CONCLUIDO,
       createdAt: Timestamp.fromDate(new Date()),      

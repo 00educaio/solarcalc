@@ -71,8 +71,8 @@ export default function SimulationResultsScreen() {
                         <Card.Title title={item.id} subtitle={item.createdAt?.toDate().toLocaleString() ?? "Data nao disponivel"} left={LeftContent} />
                         <Card.Content>
                         <Text style={styles.cardLabel}>Tamanho Estimado: <Text style={{ fontWeight: "bold" }}>{item.tamanhoSistema} (kWp)</Text></Text>
-                        <Text style={styles.cardLabel}>Economia Mensal Estimada: <Text style={{ fontWeight: "bold" }}>R$ {item.economiaMes},00</Text></Text>
-                        <Text style={styles.cardLabel}>Economia Anual Estimada: <Text style={{ fontWeight: "bold" }}>R$ {item.economiaAno},00</Text></Text>
+                        <Text style={styles.cardLabel}>Economia Mensal Estimada: <Text style={{ fontWeight: "bold" }}>{item.economiaMes}</Text></Text>
+                        <Text style={styles.cardLabel}>Economia Anual Estimada: <Text style={{ fontWeight: "bold" }}>{item.economiaAno}</Text></Text>
                         
                         <Divider style={{ marginVertical: 10 }} />
                         
