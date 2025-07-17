@@ -1,22 +1,31 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import { Text, Button } from 'react-native-paper';
-import { Link, useRouter } from 'expo-router';
+import { Link } from 'expo-router';
 import { auth } from '../../../firebase.config';
 import  handleLogout from '../../services/auth/handleLogout';
 import { seedEquipamentosPadrao } from '@/src/services/seedEquipamentosPadrao';
 
 export default function HomeScreen() {
-  const user = auth.currentUser;
+  const [alertShown, setAlertShown] = useState(false);
 
-  const handleSeed = async () => {
-    try {
-      await seedEquipamentosPadrao();
-      Alert.alert("Seed finalizada com sucesso!");
-    } catch (err) {
-      Alert.alert("Erro ao executar seed.");
+  useEffect(() => {
+    if (!alertShown) {
+      Alert.alert("Atenção", "A simulação é apenas uma estimativa, aguarde a adição das empresas parceiras para obter resultados reais!");
+      setAlertShown(true);
     }
-  };
+  }, []);
+
+  const user = auth.currentUser;
+  
+  // const handleSeed = async () => {
+  //   try {
+  //     await seedEquipamentosPadrao();
+  //     Alert.alert("Seed finalizada com sucesso!");
+  //   } catch (err) {
+  //     Alert.alert("Erro ao executar seed.");
+  //   }
+  // };
 
   return (
     <View style={styles.container}>
