@@ -24,7 +24,7 @@ export enum Status {
 export type SimulationResult = {
   id?: string;
   dadosIniciais: SimulationData;
-  tamanhoSistema?: number;
+  tamanhoSistema?: string;
   // qtdPaineis?: number;
   economiaMes?: string;
   economiaAno?: string;
@@ -59,20 +59,24 @@ export const simulationManager = async (dadosSimulacao: SimulationData, equipame
     }
 }
 
-//Brincando
 const calcSimulation = (dados: SimulationData, equipamentos: Equipamento[]) : SimulationResult => {
     const consumoEquipamentos = equipamentos.reduce((total, equipamento) => total + parseInt(equipamento.kilowatts_hora_mes), 0);
-    const consumoTotal = parseInt(dados.consumo) + consumoEquipamentos;
+    const consumo = parseInt(dados.consumo);
+    if (isNaN(consumo)) {
+      throw new Error("Consumo inválido");
+    }
+    const consumoTotal = consumo + consumoEquipamentos;
+    dados.consumo = consumoTotal.toString();
     const systemSize = consumoTotal / 120;
     const retorno = "3 anos";
-    const economyMonth = systemSize * 102;
+    const economyMonth = (systemSize * 102);
     const economyAnual = economyMonth * 12
     const economyMonthFormatted = economyMonth.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     const economyAnualFormatted = economyAnual.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
     const simulationResult: SimulationResult = {
       dadosIniciais: dados,
-      tamanhoSistema: systemSize,
+      tamanhoSistema: systemSize.toFixed(2),
       economiaMes: economyMonthFormatted,
       economiaAno: economyAnualFormatted,
       payback: retorno,
@@ -91,8 +95,6 @@ const saveSimulation = async (data: SimulationResult, equipamentos: Equipamento[
   const docRef = await addDoc(collection(db, "simulations"), {
     user: user.uid,
     ...data,
-    
-    
   });
   const docId = docRef.id;
   

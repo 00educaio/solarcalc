@@ -35,7 +35,7 @@ export default function showSimulation() {
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={styles.container} style={{ flex: 1 }}>
         <View style={styles.header}>
-          <Text style={{ fontSize: 40, color: "#08364E" }}>Simulação </Text>
+          <Text style={{ fontSize: 30, color: "#08364E" }}>Detalhes</Text>
           <Avatar.Image size={80} style={{alignSelf: 'flex-end'}} source={require('../../assets/final.png')} />
         </View>
         <View style={styles.corpo}>
@@ -67,7 +67,7 @@ export default function showSimulation() {
                   <View style={styles.cardEquipamentos}>
                     {simulacao.equipamentos.map((equipamento, index) => (
                       <View key={index}>
-                        <Text style={{ fontWeight: "bold" }}>{equipamento.nome} x{equipamento.qtd}</Text>
+                        <Text style={{ fontWeight: "bold" }}>{equipamento.nome}</Text>
                         <Text> - Consumo Por Mês (kWh/mês): <Text style={{ fontWeight: "bold" }}>{equipamento.kilowatts_hora_mes}</Text> </Text>
                       </View>
                     ))}

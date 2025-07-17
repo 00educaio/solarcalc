@@ -27,10 +27,10 @@ export default function ResultsScreen() {
 
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, marginBottom: 40 }}>
       <ScrollView contentContainerStyle={styles.container} style={{ flex: 1 }}>
         <View style={styles.header}>
-          <Text style={{ fontSize: 40, color: "#08364E", width: "70%" }}>Detalhes da Simulação</Text>
+          <Text style={{ fontSize: 30, color: "#08364E", width: "70%" }}>Detalhes da Simulação</Text>
           <Avatar.Image size={80} style={{alignSelf: 'flex-end'}} source={require('../../assets/final.png')} />
         </View>
         <View style={styles.corpo}>
@@ -41,7 +41,7 @@ export default function ResultsScreen() {
             <View style={styles.bottom}>
 
               <FontAwesome5 name="sun" size={30} color="#08364E"/>
-              <Text style={styles.texto}>{simulacao?.tamanhoSistema}kWp</Text>
+              <Text style={styles.texto}>{simulacao?.tamanhoSistema} kWp</Text>
 
             </View>
           
@@ -96,6 +96,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     paddingBottom: 20,
     width: width,
+    
   },
   card: {
     borderWidth: 1,

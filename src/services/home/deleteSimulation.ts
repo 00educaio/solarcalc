@@ -1,5 +1,6 @@
 import { deleteDoc, doc } from "firebase/firestore";
 import { getFirestore, Firestore } from "firebase/firestore";
+import { Alert } from "react-native";
 
 export const deleteSimulation = async (id: string | undefined) => {
     if (!id) {
@@ -8,5 +9,5 @@ export const deleteSimulation = async (id: string | undefined) => {
       }
     const db: Firestore = getFirestore();
     await deleteDoc(doc(db, "simulations", id));
-    console.log("Simulação excluida com sucesso");
+    Alert.alert("Simulação excluida com sucesso!");
 }

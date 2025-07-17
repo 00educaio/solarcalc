@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import { Text, Button } from 'react-native-paper';
 import { Link } from 'expo-router';
@@ -7,15 +6,6 @@ import  handleLogout from '../../services/auth/handleLogout';
 import { seedEquipamentosPadrao } from '@/src/services/seedEquipamentosPadrao';
 
 export default function HomeScreen() {
-  const [alertShown, setAlertShown] = useState(false);
-
-  useEffect(() => {
-    if (!alertShown) {
-      Alert.alert("Atenção", "A simulação é apenas uma estimativa, aguarde a adição das empresas parceiras para obter resultados reais!");
-      setAlertShown(true);
-    }
-  }, []);
-
   const user = auth.currentUser;
   
   // const handleSeed = async () => {
@@ -33,6 +23,12 @@ export default function HomeScreen() {
       <Text style={styles.subtitle}>
         {user?.displayName || "Usuário"}
       </Text>
+
+      <View>
+        <Text style={styles.subtitle}>
+        Atenção! A simulação é apenas uma estimativa, aguarde a adição das empresas parceiras para obter melhores resultados!
+        </Text>
+      </View>
 
       <Link href="/home/simulation" asChild>
         <Button mode="contained" style={styles.button}>

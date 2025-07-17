@@ -59,7 +59,7 @@ export default function SimulationResultsScreen() {
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
-              <Text style={{ fontSize: 40, color: "#08364E" }}>Suas Simulações </Text>
+              <Text style={{ fontSize: 30, color: "#08364E" }}>Suas Simulações </Text>
               <Avatar.Image size={80} style={{alignSelf: 'flex-end'}} source={require('../../assets/final.png')} />
             </View>
                 <FlatList
@@ -80,7 +80,7 @@ export default function SimulationResultsScreen() {
                         {item.equipamentos && item.equipamentos.length > 0 ? (
                             <View>
                             {item.equipamentos.map((eq, index) => (
-                                <Text key={index}>{eq.nome} x{eq.qtd}</Text>
+                                <Text key={index}>{eq.nome}</Text>
                             ))}
                             </View>
                             
@@ -128,7 +128,7 @@ export default function SimulationResultsScreen() {
 
 const styles = StyleSheet.create({
     container: {
-        flexGrow: 1,
+        flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'center',
         backgroundColor: '#ffffff',
@@ -177,6 +177,7 @@ const styles = StyleSheet.create({
         width: '100%',
       },
       corpo: {
+        flex: 1,
         padding: 20,
         gap: 30,
         borderColor: "#08364E",

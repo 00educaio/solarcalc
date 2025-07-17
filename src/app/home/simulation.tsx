@@ -26,7 +26,6 @@ export default function SimulacaoScreen() {
     const [equipamentosProntos, setEquipamentosProntos] = useState<Equipamento[]>([]);
     const [equipamentos, setEquipamentos] = useState<Equipamento[]>([]);
     const [selectedEquipamento, setSelectedEquipamento] = useState<Equipamento | null>(null);
-    const [equipamentoQtd, setEquipamentoQtd] = useState('1');
     
 
     useEffect(() => {
@@ -63,11 +62,10 @@ export default function SimulacaoScreen() {
     };
     
     const addEquipamento = () => {
-      if (selectedEquipamento && parseInt(equipamentoQtd)) {
-        const newEquipamento : Equipamento = { ...selectedEquipamento, qtd: equipamentoQtd };
+      if (selectedEquipamento) {
+        const newEquipamento : Equipamento = { ...selectedEquipamento };
         setEquipamentos([...equipamentos, newEquipamento]);
         setSelectedEquipamento(null);
-        setEquipamentoQtd('1')
       }
       else {
         alert('Selecione um equipamento');
@@ -86,7 +84,7 @@ export default function SimulacaoScreen() {
           <Provider>
             <ScrollView contentContainerStyle={styles.container} style={{ flex: 1 }}>
               <View style={styles.header}>
-                <Text style={{ fontSize: 40, color: "#08364E" }}>Simulação</Text>
+                <Text style={{ fontSize: 30, color: "#08364E" }}>Simulação</Text>
                 <Avatar.Image size={80} style={{alignSelf: 'flex-end'}} source={require('../../assets/final.png')} />
               </View>
               <View style={styles.card}>
@@ -148,13 +146,6 @@ export default function SimulacaoScreen() {
                     ))}
                   </Picker>
               )}
-                <TextInput
-                  label="Quantidade"
-                  value={equipamentoQtd}
-                  onChangeText={setEquipamentoQtd}
-                  keyboardType="numeric"
-                  style={styles.input}
-                />
                 <Button onPress={addEquipamento} mode="outlined" style={{ marginVertical: 10, width: '100%'}}>
                   Adicionar equipamento selecionado
                 </Button>
@@ -168,7 +159,6 @@ export default function SimulacaoScreen() {
                       <View key={index} style={styles.equipamentoBox}>
                         <Text>Nome: {eq.nome}</Text>
                         <Text>Kilowatts/hora mês: {eq.kilowatts_hora_mes} kWh/mês</Text>
-                        <Text>Quantidade: {eq.qtd}</Text>
                         <Button onPress={() => removeEquipamento(index)} mode="outlined" style={{ marginVertical: 10, width: '100%', borderWidth: 1, height: 40}}>
                           Remover
                         </Button>

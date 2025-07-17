@@ -10,7 +10,6 @@ const ModalEquipamento: React.FC<Props> = ({ onSubmit }) => {
   const [visible, setVisible] = useState(false);
   const [nome, setNome] = useState('');
   const [kilowatts_hora_mes, setkilowatts_hora_mes] = useState('');
-  const [quantidade, setQuantidade] = useState('');
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
@@ -19,12 +18,10 @@ const ModalEquipamento: React.FC<Props> = ({ onSubmit }) => {
     const equipamento: Equipamento = {
       nome: nome,
       kilowatts_hora_mes: kilowatts_hora_mes,
-      qtd: quantidade,
     };
     onSubmit(equipamento);
     setNome('');
     setkilowatts_hora_mes('');
-    setQuantidade('');
     hideModal();
   };
 
@@ -50,14 +47,6 @@ const ModalEquipamento: React.FC<Props> = ({ onSubmit }) => {
               placeholder="Consumo Por Hora (kWh)"
               value={kilowatts_hora_mes}
               onChangeText={setkilowatts_hora_mes}
-              keyboardType="numeric"
-              style={styles.input}
-              placeholderTextColor="#888"
-            />
-            <TextInput
-              placeholder="Quantidade"
-              value={quantidade}
-              onChangeText={setQuantidade}
               keyboardType="numeric"
               style={styles.input}
               placeholderTextColor="#888"
